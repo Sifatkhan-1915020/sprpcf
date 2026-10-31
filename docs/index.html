@@ -722,6 +722,93 @@
       border-top: 1px solid var(--border-color);
       background: var(--bg-primary);
     }
+  
+    /* STEP-BY-STEP TUTORIAL SECTION */
+    .step-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.75rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s ease;
+    }
+    .step-card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: var(--primary);
+    }
+    .step-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.85rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .step-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .step-number {
+      background: var(--primary);
+      color: white;
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+      display: inline-block;
+    }
+    .step-card h3 {
+      margin: 0;
+      font-size: 1.25rem;
+      color: var(--text-main);
+    }
+    .step-badge {
+      background: var(--primary-light);
+      color: var(--primary);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.25rem 0.65rem;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-family: 'Fira Code', monospace;
+    }
+    .param-name {
+      font-family: 'Fira Code', monospace;
+      font-weight: 600;
+      color: var(--primary);
+      white-space: nowrap;
+    }
+    .param-type {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.82rem;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+    .param-unit {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+    .function-signature {
+      background: var(--bg-tertiary);
+      border-left: 3px solid var(--primary);
+      padding: 0.75rem 1rem;
+      margin: 1rem 0;
+      border-radius: 0 6px 6px 0;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      overflow-x: auto;
+      color: var(--text-main);
+    }
+    
   </style>
 </head>
 <body>
@@ -763,6 +850,7 @@
           <li><a href="#introduction" class="sidebar-link active">Introduction</a></li>
           <li><a href="#installation" class="sidebar-link">Installation</a></li>
           <li><a href="#quickstart" class="sidebar-link">Quick-Start Walkthrough</a></li>
+          <li><a href="#step-by-step-guide" class="sidebar-link">Step-by-Step Code Guide</a></li>
           <li><a href="#interactive-designer" class="sidebar-link">Interactive Fiber Designer</a></li>
         </ul>
       </div>
@@ -942,6 +1030,930 @@ spr.create_research_dashboard(
         </div>
       </section>
 
+
+      <!-- =================================================================== -->
+      <!-- SECTION: STEP-BY-STEP CODE TUTORIAL & PARAMETER EXPLANATION        -->
+      <!-- =================================================================== -->
+      <section id="step-by-step-guide">
+        <h2>📚 Step-by-Step Code Guide & Complete Parameter Reference</h2>
+        <p class="lead">
+          This comprehensive guide walks you through every stage of the 8-step scientific simulation pipeline for Surface Plasmon Resonance Photonic Crystal Fiber (SPR-PCF) biosensors. Every function signature, return type, and physical parameter is rigorously detailed with theoretical definitions, SI units, valid ranges, and numerical guidelines.
+        </p>
+
+        <div class="callout callout-info">
+          <div class="callout-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.8 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+            Universal Fiber Architecture Support
+          </div>
+          <p>
+            While this walkthrough demonstrates a side-polished D-shaped PCF (<code>DShapedPCF</code>), the exact same 8-step pipeline applies seamlessly to all PCF geometries supported by SPR-PCF Studio, including <code>ConventionalPCF</code> (circular PCF), <code>DualChannelPCF</code> (dual microfluidic channels), <code>HollowCorePCF</code> (photonic bandgap hollow-core), and custom user-defined polygons via <code>PCFGeometry</code>.
+          </p>
+        </div>
+
+        <!-- ==================== STEP 1 ==================== -->
+        <div class="step-card" id="step-1">
+          <div class="step-header">
+            <div class="step-title-wrap">
+              <span class="step-number">Step 1 of 8</span>
+              <h3>Project Initialization & Fiber Geometry Modeling</h3>
+            </div>
+            <span class="step-badge">sprpcf.core &bull; sprpcf.geometry</span>
+          </div>
+
+          <p>
+            The workflow begins by creating a top-level <code>Project</code> instance and defining the transverse 2D cross-section of the photonic crystal fiber. Fiber geometries are represented as closed boundary planar regions with distinct physical domain tags (background silica matrix, air-hole lattice, nanoscale plasmonic metal film, adhesion layer, analyte channel, and outermost Perfectly Matched Layer PML).
+          </p>
+
+          <div class="code-block">
+            <div class="code-header">
+              <span>PYTHON &bull; step1_geometry.py</span>
+              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre><code>import sprpcf as spr
+
+# 1. Initialize master research project container
+project = spr.Project(name="DShaped_SPR_Biosensor")
+
+# 2. Instantiate parametric D-shaped PCF cross-section
+# (ConventionalPCF, DualChannelPCF, HollowCorePCF share identical modular usage)
+pcf = spr.DShapedPCF(
+    pitch=2.0e-6,                  # 2.0 um lattice pitch (center-to-center hole spacing)
+    rings=3,                       # 3 concentric hexagonal air-hole rings
+    hole_radius=0.5e-6,            # 0.5 um air-hole radius (d = 1.0 um, d/Lambda = 0.5)
+    polish_depth=3.5e-6,           # 3.5 um polish distance from fiber core to flat surface
+    metal_thickness=40.0e-9,       # 40 nm plasmonic gold layer
+    metal_material="gold",         # Active plasmonic material identifier
+    adhesion_thickness=2.0e-9,     # 2 nm titanium adhesion buffer layer
+    adhesion_material="titanium",  # Adhesion material identifier
+    analyte_layer_thickness=2.0e-6,# 2.0 um microfluidic sensing analyte channel
+    cladding_radius=10.0e-6,       # 10.0 um outer silica cladding radius
+    name="d_shaped_spr_pcf"
+)
+
+# 3. Formally validate geometry before meshing
+report = spr.validate_geometry(pcf)
+assert report.is_valid, f"Geometry validation failed: {report.errors}"
+print(f"Geometry Validated! Domain Count: {len(pcf.get_regions())}")
+project.set_geometry(pcf)</code></pre>
+          </div>
+
+          <h4>Function Signatures</h4>
+          <div class="function-signature">
+            spr.Project(name: str = 'SPR_PCF_Sensor') -> Project<br>
+            spr.DShapedPCF(pitch: float = 2e-06, rings: int = 3, hole_radius: float = 5e-07, polish_depth: float = 3.5e-06, metal_thickness: float = 4e-08, metal_material: str = 'gold', adhesion_thickness: float = 0.0, adhesion_material: str = 'titanium', analyte_layer_thickness: float = 2e-06, cladding_radius: float = 1e-05, name: str = 'd_shaped_spr_pcf') -> DShapedPCF<br>
+            spr.validate_geometry(geometry: Any) -> GeometryValidationReport
+          </div>
+
+          <h4>Parameter Reference Table</h4>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Parameter</th>
+                  <th>Type &amp; Default</th>
+                  <th>Units</th>
+                  <th>Description &amp; Scientific Bounds</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="param-name">name</span></td>
+                  <td><span class="param-type">str = 'SPR_PCF_Sensor'</span></td>
+                  <td><span class="param-unit">&mdash;</span></td>
+                  <td>Project and geometry identifier used for metadata tracking, logging, and dataset export provenance.</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">pitch</span></td>
+                  <td><span class="param-type">float = 2e-06</span></td>
+                  <td><span class="param-unit">&mu;m / m</span></td>
+                  <td>Lattice pitch &Lambda; (center-to-center distance between adjacent air holes in hexagonal array). Governs effective index contrast and photonic bandgap/TIR regime. Must satisfy &Lambda; &gt; 2 &times; <code>hole_radius</code>. Typical values: 1.5 &ndash; 3.0 &mu;m.</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">rings</span></td>
+                  <td><span class="param-type">int = 3</span></td>
+                  <td><span class="param-unit">count</span></td>
+                  <td>Number of hexagonal air-hole rings surrounding the solid defect core. Controls radiative confinement leakage: higher rings suppress leaky loss to cladding. Typical values: 2 &ndash; 5.</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">hole_radius</span></td>
+                  <td><span class="param-type">float = 5e-07</span></td>
+                  <td><span class="param-unit">&mu;m / m</span></td>
+                  <td>Air-hole radius <em>r</em>. Relative diameter <em>d</em>/&Lambda; = 2<em>r</em>/&Lambda; controls endlessly single-mode behavior (<em>d</em>/&Lambda; &le; 0.43) vs multimode guidance. Typical values: 0.3 &ndash; 0.8 &mu;m.</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">polish_depth</span></td>
+                  <td><span class="param-type">float = 3.5e-06</span></td>
+                  <td><span class="param-unit">&mu;m / m</span></td>
+                  <td>Perpendicular distance <em>d<sub>p</sub></em> from the central fiber core to the side-polished flat interface. Controls evanescent field overlap with the plasmonic film. Must satisfy <em>r</em> &lt; <em>d<sub>p</sub></em> &lt; <em>R</em><sub>clad</sub>.</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">metal_thickness</span></td>
+                  <td><span class="param-type">float = 4e-08</span></td>
+                  <td><span class="param-unit">nm / m</span></td>
+                  <td>Thickness <em>t</em><sub>metal</sub> of the active plasmonic film (e.g. gold, silver). Optimum SPR excitation occurs between 30 and 50 nm. Thicker films attenuate coupling; thinner films broaden resonance linewidth.</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">metal_material</span></td>
+                  <td><span class="param-type">str = 'gold'</span></td>
+                  <td><span class="param-unit">&mdash;</span></td>
+                  <td>Plasmonic material identifier registered in <code>sprpcf.materials.database</code> (e.g. <code>'gold'</code>, <code>'silver'</code>, <code>'copper'</code>, <code>'aluminum'</code>).</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">adhesion_thickness</span></td>
+                  <td><span class="param-type">float = 0.0</span></td>
+                  <td><span class="param-unit">nm / m</span></td>
+                  <td>Thickness <em>t</em><sub>adh</sub> of intermediate adhesion wetting layer (e.g., Ti or Cr, typically 2 &ndash; 5 nm). Titanium introduces significant damping (&epsilon;&quot;), damping peak loss and causing a measurable red-shift.</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">adhesion_material</span></td>
+                  <td><span class="param-type">str = 'titanium'</span></td>
+                  <td><span class="param-unit">&mdash;</span></td>
+                  <td>Adhesion metal material identifier (e.g. <code>'titanium'</code>, <code>'chromium'</code>).</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">analyte_layer_thickness</span></td>
+                  <td><span class="param-type">float = 2e-06</span></td>
+                  <td><span class="param-unit">&mu;m / m</span></td>
+                  <td>Thickness of the microfluidic analyte domain above the metal surface. Must exceed the SPP evanescent decay depth (&delta;<sub><em>d</em></sub> &approx; 200 &ndash; 500 nm) to avoid unphysical boundary reflection.</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">cladding_radius</span></td>
+                  <td><span class="param-type">float = 1e-05</span></td>
+                  <td><span class="param-unit">&mu;m / m</span></td>
+                  <td>Outer circular silica cladding radius <em>R</em><sub>clad</sub>. Outer boundary terminates at the inner edge of the Perfectly Matched Layer (PML).</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="callout callout-warning">
+            <div class="callout-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+              Geometric Validation Rule
+            </div>
+            <p>
+              <code>spr.validate_geometry()</code> checks analytical bounds prior to meshing. If air holes overlap (2<em>r</em> &ge; &Lambda;), if the polish plane cuts through the defect core (<em>d<sub>p</sub></em> &le; <em>r</em>), or if the PML does not enclose the computational domain, an <code>InvalidGeometryError</code> is raised immediately to prevent invalid mesh generation.
+            </p>
+          </div>
+        </div>
+
+        <!-- ==================== STEP 2 ==================== -->
+        <div class="step-card" id="step-2">
+          <div class="step-header">
+            <div class="step-title-wrap">
+              <span class="step-number">Step 2 of 8</span>
+              <h3>Material Dispersion &amp; Complex Permittivity Modeling</h3>
+            </div>
+            <span class="step-badge">sprpcf.materials</span>
+          </div>
+
+          <p>
+            SPR is an interface resonance phenomenon critically dependent on the dispersion of both the dielectric and the metal. Fused silica cladding obeys the three-term Sellmeier equation; metals (Au, Ag, Ti) obey multi-oscillator Drude-Lorentz models capturing conduction electron plasma frequencies and interband transitions; analytes represent biological or chemical solutions under test.
+          </p>
+
+          <div class="code-block">
+            <div class="code-header">
+              <span>PYTHON &bull; step2_materials.py</span>
+              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre><code># 1. Retrieve validated material models from built-in material database
+silica = spr.materials.get("silica")
+gold = spr.materials.get("gold")
+titanium = spr.materials.get("titanium")
+
+# 2. Instantiate analyte medium under test (e.g., aqueous solution na = 1.330)
+analyte = spr.AnalyteMaterial(
+    refractive_index=1.330,  # Calibrated baseline refractive index (RIU)
+    name="aqueous_analyte"   # Descriptive identifier
+)
+
+# 3. Query complex permittivity eps = eps_r + i*eps_i at lambda = 1.55 um
+wl = 1.55e-6
+n_silica = silica.refractive_index(wl)
+eps_gold = gold.permittivity(wl)
+
+print(f"Silica Refractive Index @ 1550 nm: n = {n_silica.real:.6f}")
+print(f"Gold Permittivity @ 1550 nm: eps_r = {eps_gold.real:.2f}, eps_i = {eps_gold.imag:.2f}")
+# Gold verifies SPR condition: Re(eps_metal) < -eps_dielectric (e.g. -115.68 < -1.77)</code></pre>
+          </div>
+
+          <h4>Dispersion Equations &amp; Material Models</h4>
+          <p>
+            The built-in materials evaluate analytical dispersion formulas on demand at any simulated wavelength &lambda;:
+          </p>
+          <ul>
+            <li>
+              <strong>Fused Silica (Sellmeier Formula):</strong>
+              $$n^2(\lambda) = 1 + \sum_{i=1}^3 rac{B_i \lambda^2}{\lambda^2 - C_i}$$
+              Calibrated from experimental data (&lambda; &isin; [0.21 &mu;m, 3.71 &mu;m]) with coefficients:
+              <em>B</em><sub>1</sub>=0.6961663, <em>B</em><sub>2</sub>=0.4079426, <em>B</em><sub>3</sub>=0.8974794; 
+              <em>C</em><sub>1</sub>=0.0684043<sup>2</sup>, <em>C</em><sub>2</sub>=0.1162414<sup>2</sup>, <em>C</em><sub>3</sub>=9.896161<sup>2</sup> &mu;m<sup>2</sup>.
+            </li>
+            <li>
+              <strong>Plasmonic Metals (Drude-Lorentz Multi-Oscillator Model):</strong>
+              $$	ilde{arepsilon}(\omega) = arepsilon_\infty - rac{\omega_p^2}{\omega(\omega + i\Gamma_0)} + \sum_{j=1}^K rac{f_j \omega_p^2}{(\omega_j^2 - \omega^2) - i\omega\gamma_j}$$
+              Correctly models both intraband conduction electron oscillations and interband electronic transitions from filled <em>d</em>-bands to the Fermi surface.
+            </li>
+          </ul>
+
+          <h4>Parameter Reference Table</h4>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Parameter / Property</th>
+                  <th>Type &amp; Default</th>
+                  <th>Units</th>
+                  <th>Description &amp; Scientific Role</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="param-name">refractive_index</span></td>
+                  <td><span class="param-type">float = 1.330</span></td>
+                  <td><span class="param-unit">RIU</span></td>
+                  <td>Calibrated refractive index <em>n<sub>a</sub></em> of sensing analyte liquid/gas. Typical biological sample range: 1.300 &ndash; 1.420 RIU (e.g. water: 1.333, glucose solutions: 1.34 &ndash; 1.38, cancer cells: 1.38 &ndash; 1.40).</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">eps_infinity</span></td>
+                  <td><span class="param-type">float</span></td>
+                  <td><span class="param-unit">dimensionless</span></td>
+                  <td>High-frequency background dielectric constant &epsilon;<sub>&infin;</sub> (e.g., 5.967 for gold).</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">plasma_frequency</span></td>
+                  <td><span class="param-type">float</span></td>
+                  <td><span class="param-unit">rad/s</span></td>
+                  <td>Plasma frequency &omega;<sub><em>p</em></sub> corresponding to collective conduction electron oscillations.</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">collision_frequency</span></td>
+                  <td><span class="param-type">float</span></td>
+                  <td><span class="param-unit">rad/s</span></td>
+                  <td>Damping collision frequency &Gamma;<sub>0</sub> determining the intrinsic ohmic loss of the metal.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ==================== STEP 3 ==================== -->
+        <div class="step-card" id="step-3">
+          <div class="step-header">
+            <div class="step-title-wrap">
+              <span class="step-number">Step 3 of 8</span>
+              <h3>Multi-Domain Conformal FEM Meshing &amp; Quality Inspection</h3>
+            </div>
+            <span class="step-badge">sprpcf.meshing</span>
+          </div>
+
+          <p>
+            Plasmonic PCF simulation involves extreme multi-scale geometry: the overall fiber diameter is 20 &mu;m, whereas the gold film is only 40 nm thick (a 500:1 geometric aspect ratio). A standard uniform mesh would require millions of elements or cause severe numerical artifacts. <code>sprpcf.meshing</code> generates an adaptive, multi-scale triangular mesh with graded refinement towards material interfaces, and evaluates element quality metrics.
+          </p>
+
+          <div class="code-block">
+            <div class="code-header">
+              <span>PYTHON &bull; step3_meshing.py</span>
+              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre><code># 1. Configure multi-scale finite-element meshing parameters
+mesh_settings = spr.MeshSettings(
+    global_size=2.5e-7,              # 250 nm nominal element size in bulk silica
+    min_size=1.0e-8,                 # 10 nm minimum element size at thin metal film
+    max_size=8.0e-7,                 # 800 nm maximum element size in outer PML
+    growth_rate=1.3,                 # Maximum element size growth ratio across boundaries
+    refine_interfaces=True,          # Enforce conformal boundary refinement
+    metal_layer_elements=4,          # Minimum 4 elements through thickness of 40 nm gold
+    core_refinement_factor=0.5,      # 2x denser mesh in guided core region
+    pml_refinement_factor=1.5,       # Relaxed mesh in absorbing outer sponge
+    element_order=1,                 # 1 = linear Lagrange, 2 = quadratic isoparametric
+    backend="native"                 # 'native' triangulator or 'gmsh'
+)
+
+# 2. Generate conforming unstructured triangular mesh
+mesh = spr.generate_mesh(pcf, settings=mesh_settings)
+
+# 3. Perform comprehensive mesh quality validation
+mesh_report = spr.validate_mesh(mesh, min_quality_threshold=0.001)
+print(f"Total Mesh Elements: {mesh_report.num_elements:,}")
+print(f"Total Mesh Nodes:    {mesh_report.num_nodes:,}")
+print(f"Minimum Quality:     {mesh_report.min_quality:.4f} (Metric: 2*r_in / r_out)")
+print(f"Maximum Aspect Ratio:{mesh_report.max_aspect_ratio:.2f}")
+assert mesh_report.is_valid, f"Mesh quality check failed: {mesh_report.errors}"</code></pre>
+          </div>
+
+          <h4>Function Signatures</h4>
+          <div class="function-signature">
+            spr.MeshSettings(global_size: float = 2.5e-7, min_size: float = 1e-8, max_size: float = 8e-7, growth_rate: float = 1.3, refine_interfaces: bool = True, metal_layer_elements: int = 4, core_refinement_factor: float = 0.5, pml_refinement_factor: float = 1.5, element_order: int = 1, backend: str = 'native') -> MeshSettings<br>
+            spr.generate_mesh(geometry: Any, settings: Optional[MeshSettings] = None, backend: str = 'native') -> Mesh<br>
+            spr.validate_mesh(mesh: Mesh, min_quality_threshold: float = 0.001, interface_y: Optional[float] = None) -> MeshQualityReport
+          </div>
+
+          <h4>Parameter Reference Table</h4>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Parameter</th>
+                  <th>Type &amp; Default</th>
+                  <th>Units</th>
+                  <th>Description &amp; Numerical Impact</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="param-name">global_size</span></td>
+                  <td><span class="param-type">float = 2.5e-7</span></td>
+                  <td><span class="param-unit">m</span></td>
+                  <td>Nominal target element edge length <em>h</em> in bulk silica regions. Must satisfy <em>h</em> &le; &lambda; / (5 &times; <em>n</em>) to adequately resolve optical wave variations.</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">min_size</span></td>
+                  <td><span class="param-type">float = 1.0e-8</span></td>
+                  <td><span class="param-unit">m</span></td>
+                  <td>Minimum allowed element edge length (10 nm). Prevents node overcrowding while accurately resolving nanoscale metallic layers.</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">max_size</span></td>
+                  <td><span class="param-type">float = 8.0e-7</span></td>
+                  <td><span class="param-unit">m</span></td>
+                  <td>Upper bound on element size in homogeneous regions far from optical power flow.</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">growth_rate</span></td>
+                  <td><span class="param-type">float = 1.3</span></td>
+                  <td><span class="param-unit">ratio</span></td>
+                  <td>Maximum allowable size ratio between adjacent connected triangles. Kept &le; 1.3 to avoid large stiffness matrix condition numbers &kappa;(<em>A</em>).</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">refine_interfaces</span></td>
+                  <td><span class="param-type">bool = True</span></td>
+                  <td><span class="param-unit">bool</span></td>
+                  <td>When enabled, projects additional boundary vertices onto circular hole boundaries and flat gold-analyte interfaces.</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">metal_layer_elements</span></td>
+                  <td><span class="param-type">int = 4</span></td>
+                  <td><span class="param-unit">count</span></td>
+                  <td>Minimum number of element layers through the metal film thickness. At least 3 &ndash; 4 elements are mathematically required to resolve exponential skin depth decay &delta;<sub>skin</sub> = 1/Im(<em>k<sub>z</sub></em>).</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">core_refinement_factor</span></td>
+                  <td><span class="param-type">float = 0.5</span></td>
+                  <td><span class="param-unit">scale</span></td>
+                  <td>Size scaling factor applied to elements inside the central defect core. 0.5 reduces element size by 50% (quadrupling element density) where modal fields are strongest.</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">pml_refinement_factor</span></td>
+                  <td><span class="param-type">float = 1.5</span></td>
+                  <td><span class="param-unit">scale</span></td>
+                  <td>Size scaling factor for outer PML elements. Allows larger elements in the absorbing layer, saving memory.</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">element_order</span></td>
+                  <td><span class="param-type">int = 1</span></td>
+                  <td><span class="param-unit">order</span></td>
+                  <td>Finite element basis polynomial order: 1 for linear edge elements, 2 for quadratic serendipity elements with curved edge mapping.</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">backend</span></td>
+                  <td><span class="param-type">str = 'native'</span></td>
+                  <td><span class="param-unit">&mdash;</span></td>
+                  <td>Meshing engine: <code>'native'</code> (pure Python/NumPy Delaunay triangulation, zero dependencies) or <code>'gmsh'</code> (high-performance C++ Gmsh API).</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ==================== STEP 4 ==================== -->
+        <div class="step-card" id="step-4">
+          <div class="step-header">
+            <div class="step-title-wrap">
+              <span class="step-number">Step 4 of 8</span>
+              <h3>Two-Stage Adaptive Spectral Wavelength Sweep</h3>
+            </div>
+            <span class="step-badge">sprpcf.studies &bull; sprpcf.solvers</span>
+          </div>
+
+          <p>
+            Resolving ultra-narrow plasmonic resonance loss peaks (often FWHM &lt; 30 nm) across a broad spectrum (e.g. 850 &ndash; 1350 nm) poses a dilemma: uniform fine resolution requires hundreds of costly FEM solves, while coarse sweeps risk missing or artificially broadening the peak. <code>AdaptiveWavelengthSweepStudy</code> solves this by executing a coarse reconnaissance sweep, automatically bracketing potential resonance intervals, and launching an adaptive fine sweep (&Delta;&lambda; &le; 1 &ndash; 2 nm) inside the resonance window.
+          </p>
+
+          <div class="code-block">
+            <div class="code-header">
+              <span>PYTHON &bull; step4_adaptive_sweep.py</span>
+              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre><code># 1. Define two-stage adaptive spectral sweep study
+study = spr.AdaptiveWavelengthSweepStudy(
+    start_wavelength_m=8.5e-7,    # 850 nm starting wavelength
+    stop_wavelength_m=1.35e-6,    # 1350 nm stopping wavelength
+    coarse_points=11,             # 11 broad reconnaissance points
+    fine_window_nm=120.0,         # 120 nm fine window centered around detected peak
+    fine_points=15,               # 15 densely sampled points inside the resonance window
+    modes=2,                      # Number of eigenmodes (fundamental x- and y-polarizations)
+    polarization="both",          # Solve for both quasi-TE and quasi-TM modes
+    name="adaptive_spr_sweep"
+)
+
+# 2. Run the study using the project and generated mesh
+results = study.run(project, mesh=mesh)
+print(f"Adaptive study completed! Total spectral solutions: {len(results.solver_results)}")</code></pre>
+          </div>
+
+          <h4>Function Signatures</h4>
+          <div class="function-signature">
+            spr.AdaptiveWavelengthSweepStudy(start_wavelength_m: float = 8.5e-07, stop_wavelength_m: float = 1.35e-06, coarse_points: int = 11, fine_window_nm: float = 120.0, fine_points: int = 15, modes: int = 2, polarization: str = 'both', name: str = 'adaptive_wavelength_sweep') -> AdaptiveWavelengthSweepStudy<br>
+            study.run(project: Project, mesh: Optional[Mesh] = None) -> StudyResult
+          </div>
+
+          <h4>Parameter Reference Table</h4>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Parameter</th>
+                  <th>Type &amp; Default</th>
+                  <th>Units</th>
+                  <th>Description &amp; Operational Role</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="param-name">start_wavelength_m</span></td>
+                  <td><span class="param-type">float = 8.5e-7</span></td>
+                  <td><span class="param-unit">m</span></td>
+                  <td>Lower bound &lambda;<sub>start</sub> of the spectral search window (e.g., 850 nm for near-infrared biosensors).</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">stop_wavelength_m</span></td>
+                  <td><span class="param-type">float = 1.35e-6</span></td>
+                  <td><span class="param-unit">m</span></td>
+                  <td>Upper bound &lambda;<sub>stop</sub> of the spectral search window (e.g., 1350 nm).</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">coarse_points</span></td>
+                  <td><span class="param-type">int = 11</span></td>
+                  <td><span class="param-unit">count</span></td>
+                  <td>Number of broad exploratory wavelength samples uniformly distributed across [&lambda;<sub>start</sub>, &lambda;<sub>stop</sub>]. Quickly locates candidate loss peaks.</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">fine_window_nm</span></td>
+                  <td><span class="param-type">float = 120.0</span></td>
+                  <td><span class="param-unit">nm</span></td>
+                  <td>Spectral span <em>W</em><sub>fine</sub> centered on the highest coarse loss peak [&lambda;<sub>0</sub> &minus; <em>W</em>/2, &lambda;<sub>0</sub> + <em>W</em>/2] targeted for dense adaptive re-meshing.</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">fine_points</span></td>
+                  <td><span class="param-type">int = 15</span></td>
+                  <td><span class="param-unit">count</span></td>
+                  <td>Number of high-resolution simulation points inside the fine window. Guarantees &Delta;&lambda; &le; 2 nm, ensuring at least 5 raw points span the FWHM.</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">modes</span></td>
+                  <td><span class="param-type">int = 2</span></td>
+                  <td><span class="param-unit">count</span></td>
+                  <td>Number of complex eigenvalues (and corresponding 2D eigenvector fields) solved at each wavelength via the shift-and-invert Krylov solver.</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">polarization</span></td>
+                  <td><span class="param-type">str = 'both'</span></td>
+                  <td><span class="param-unit">&mdash;</span></td>
+                  <td>Polarization filter: <code>'x'</code> (quasi-TE), <code>'y'</code> (quasi-TM, primarily couples with surface plasmons on horizontal D-planes), or <code>'both'</code>.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ==================== STEP 5 ==================== -->
+        <div class="step-card" id="step-5">
+          <div class="step-header">
+            <div class="step-title-wrap">
+              <span class="step-number">Step 5 of 8</span>
+              <h3>Nonlinear Resonance Fitting &amp; Sampling Adequacy Validation</h3>
+            </div>
+            <span class="step-badge">sprpcf.spr</span>
+          </div>
+
+          <p>
+            Confinement loss &alpha; is computed directly from the imaginary part of the complex effective index:
+            $$lpha(\lambda) = rac{40\pi}{\ln(10)\lambda}	ext{Im}(n_{	ext{eff}}) 	imes 10^{-2}\quad [	ext{dB/cm}]$$
+            To obtain scientifically reliable resonance peak coordinates and Full-Width at Half-Maximum (FWHM), <code>SPRAnalyzer</code> fits nonlinear Lorentzian or asymmetric Fano lineshapes using Levenberg-Marquardt optimization, reports 1&sigma; parameter uncertainties, and enforces the mandatory Sampling Adequacy Check (&ge; 5 simulation samples inside the FWHM).
+          </p>
+
+          <div class="code-block">
+            <div class="code-header">
+              <span>PYTHON &bull; step5_analyzer.py</span>
+              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre><code># 1. Initialize SPR analyzer with solved sweep results
+analyzer = spr.SPRAnalyzer(sweep_results=results.solver_results)
+
+# 2. Extract resonance peak and perform Levenberg-Marquardt lineshape fitting
+peak = analyzer.find_resonance_peak(mode_idx=0)
+
+print(f"Resonance Peak Wavelength: {peak.peak_wavelength * 1e9:.2f} nm")
+print(f"Peak Confinement Loss:     {peak.peak_loss:.2f} dB/cm")
+print(f"Full-Width Half-Max FWHM:  {peak.fwhm * 1e9:.2f} nm")
+print(f"Goodness of Fit R^2:       {peak.r_squared:.4f}")
+print(f"Samples in FWHM Interval:  {peak.n_samples_in_fwhm}")
+print(f"Sampling Adequacy Status:  {'VALIDATED' if peak.is_adequately_sampled else 'INADEQUATE'}")
+
+# Strict scientific validation guard
+assert peak.is_adequately_sampled, (
+    f"Scientific integrity violation: FWHM cannot be reliably reported with only "
+    f"{peak.n_samples_in_fwhm} points! (Minimum 5 required)"
+)</code></pre>
+          </div>
+
+          <h4>Function Signatures</h4>
+          <div class="function-signature">
+            spr.SPRAnalyzer(sweep_results: Union[List[SolverResult], SolverResult]) -> SPRAnalyzer<br>
+            analyzer.find_resonance_peak(mode_idx: int = 0) -> ResonanceFitResult<br>
+            analyzer.extract_spectrum(mode_idx: int = 0) -> LossSpectrum
+          </div>
+
+          <h4>Resonance Fit Output Fields</h4>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Field</th>
+                  <th>Type</th>
+                  <th>Units</th>
+                  <th>Scientific Meaning &amp; Validation Rule</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="param-name">peak_wavelength</span></td>
+                  <td><span class="param-type">float</span></td>
+                  <td><span class="param-unit">m (or nm)</span></td>
+                  <td>Resonance wavelength &lambda;<sub>res</sub> where the core-guided mode phase-matches the Surface Plasmon Polariton (SPP) mode (Re(<em>n</em><sub>core</sub>) &approx; Re(<em>n</em><sub>SPP</sub>)).</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">peak_loss</span></td>
+                  <td><span class="param-type">float</span></td>
+                  <td><span class="param-unit">dB/cm</span></td>
+                  <td>Maximum modal attenuation &alpha;<sub>max</sub> at resonance peak due to resonant energy transfer into the lossy metallic film.</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">fwhm</span></td>
+                  <td><span class="param-type">float</span></td>
+                  <td><span class="param-unit">m (or nm)</span></td>
+                  <td>Full-Width at Half-Maximum &Delta;&lambda;<sub>1/2</sub> of the loss curve. Narrower FWHM yields superior detection Figure of Merit (FOM).</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">r_squared</span></td>
+                  <td><span class="param-type">float</span></td>
+                  <td><span class="param-unit">dimensionless</span></td>
+                  <td>Nonlinear regression coefficient of determination <em>R</em><sup>2</sup>. Values &ge; 0.99 confirm valid Lorentzian or Fano lineshape agreement.</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">n_samples_in_fwhm</span></td>
+                  <td><span class="param-type">int</span></td>
+                  <td><span class="param-unit">count</span></td>
+                  <td>Number of actual simulated discrete wavelength solutions located within the [&lambda;<sub>res</sub> &minus; FWHM/2, &lambda;<sub>res</sub> + FWHM/2] interval.</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">is_adequately_sampled</span></td>
+                  <td><span class="param-type">bool</span></td>
+                  <td><span class="param-unit">bool</span></td>
+                  <td>Enforces research-grade integrity: <strong>True ONLY if <code>n_samples_in_fwhm &ge; 5</code></strong>. FWHM and FOM are never published if this check fails.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ==================== STEP 6 ==================== -->
+        <div class="step-card" id="step-6">
+          <div class="step-header">
+            <div class="step-title-wrap">
+              <span class="step-number">Step 6 of 8</span>
+              <h3>Full-Vector Mode Analysis &amp; Poynting Power Integration</h3>
+            </div>
+            <span class="step-badge">sprpcf.physics &bull; sprpcf.solvers</span>
+          </div>
+
+          <p>
+            Rather than relying on scalar approximations, SPR-PCF Studio computes the full-vector electromagnetic field distribution (all 6 components: <em>E<sub>x</sub></em>, <em>E<sub>y</sub></em>, <em>E<sub>z</sub></em>, <em>H<sub>x</sub></em>, <em>H<sub>y</sub></em>, <em>H<sub>z</sub></em>). The longitudinal Poynting vector flux is evaluated and integrated over the cross-section to verify energy conservation and physical forward wave propagation:
+            $$S_z(x, y) = rac{1}{2}	ext{Re}\left(E_x H_y^* - E_y H_x^*
+ight), \qquad P_z = \iint_\Omega S_z(x, y)\,dx\,dy > 0$$
+          </p>
+
+          <div class="code-block">
+            <div class="code-header">
+              <span>PYTHON &bull; step6_field_analysis.py</span>
+              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre><code># 1. Retrieve the resonant optical mode object at the resonance wavelength
+mode = results.get_mode(wavelength=peak.peak_wavelength, mode_idx=0)
+
+print(f"Complex Effective Index: n_eff = {mode.neff.real:.6f} + i*{mode.neff.imag:.4e}")
+print(f"Modal Polarization:      {mode.polarization} (Purity: {mode.polarization_purity*100:.1f}%)")
+
+# 2. Integrate longitudinal Poynting flux over 2D computational domain
+total_power = mode.calculate_total_power()
+print(f"Integrated Forward Power Flow P_z: {total_power:.4e} Watts")
+assert total_power > 0, "Directional power flow check failed: Mode must propagate forward!"
+
+# 3. Calculate evanescent field fraction overlapping the sensing analyte channel
+overlap_fraction = mode.calculate_overlap(region_name="sensing_analyte_channel")
+print(f"Analyte Confinement Factor Gamma:  {overlap_fraction*100:.2f}%")</code></pre>
+          </div>
+
+          <h4>OpticalMode Methods &amp; Properties</h4>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Method / Property</th>
+                  <th>Return Type</th>
+                  <th>Units</th>
+                  <th>Physical Significance</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="param-name">neff</span></td>
+                  <td><span class="param-type">complex</span></td>
+                  <td><span class="param-unit">dimensionless</span></td>
+                  <td>Complex modal eigenvalue <em>ñ</em><sub>eff</sub> = <em>n<sub>r</sub></em> + <em>i n<sub>i</sub></em>. <em>n<sub>r</sub></em> determines phase velocity; <em>n<sub>i</sub></em> determines confinement loss.</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">polarization</span></td>
+                  <td><span class="param-type">str</span></td>
+                  <td><span class="param-unit">&mdash;</span></td>
+                  <td>Dominant polarization classification: <code>'quasi-TE'</code> (x-polarized) or <code>'quasi-TM'</code> (y-polarized).</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">polarization_purity</span></td>
+                  <td><span class="param-type">float</span></td>
+                  <td><span class="param-unit">0.0 &ndash; 1.0</span></td>
+                  <td>Fractional optical power aligned along the dominant transverse axis: &iint; |<em>E</em><sub>dominant</sub>|<sup>2</sup> / &iint; (|<em>E<sub>x</sub></em>|<sup>2</sup> + |<em>E<sub>y</sub></em>|<sup>2</sup>).</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">calculate_total_power()</span></td>
+                  <td><span class="param-type">float</span></td>
+                  <td><span class="param-unit">Watts</span></td>
+                  <td>Surface integral of longitudinal Poynting flux &iint; <em>S<sub>z</sub></em> <em>dx</em> <em>dy</em> across all elements. Confirms that no backward or unphysical gain occurs.</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">calculate_overlap(region)</span></td>
+                  <td><span class="param-type">float</span></td>
+                  <td><span class="param-unit">0.0 &ndash; 1.0</span></td>
+                  <td>Power overlap ratio &Gamma; = &iint;<sub>analyte</sub> <em>S<sub>z</sub></em> <em>dx</em> <em>dy</em> / <em>P<sub>z</sub></em>. Direct indicator of light-matter interaction sensitivity.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ==================== STEP 7 ==================== -->
+        <div class="step-card" id="step-7">
+          <div class="step-header">
+            <div class="step-title-wrap">
+              <span class="step-number">Step 7 of 8</span>
+              <h3>Biosensor Performance &amp; Analyte Sensitivity Evaluation</h3>
+            </div>
+            <span class="step-badge">sprpcf.studies &bull; sprpcf.spr</span>
+          </div>
+
+          <p>
+            A complete biosensor characterization requires sweeping the analyte refractive index <em>n<sub>a</sub></em> across a calibrated biological range (e.g. 1.330 &ndash; 1.350 RIU) and tracking the resonance shift. SPR-PCF Studio computes Wavelength Sensitivity (<em>S</em><sub>&lambda;</sub>), Amplitude Sensitivity (<em>S<sub>A</sub></em>), Figure of Merit (FOM), and requires an explicit instrument resolution &Delta;&lambda;<sub>inst</sub> to calculate sensor resolution:
+            $$S_\lambda = rac{\Delta \lambda_{	ext{res}}}{\Delta n_a}\quad [	ext{nm/RIU}], \qquad S_A(\lambda) = -rac{1}{lpha(\lambda, n_a)}rac{\partial lpha(\lambda, n_a)}{\partial n_a}\quad [	ext{RIU}^{-1}]$$
+            $$	ext{FOM} = rac{S_\lambda}{	ext{FWHM}}\quad [	ext{RIU}^{-1}], \qquad R = rac{\Delta \lambda_{	ext{inst}}}{S_\lambda}\quad [	ext{RIU}]$$
+          </p>
+
+          <div class="code-block">
+            <div class="code-header">
+              <span>PYTHON &bull; step7_biosensor_sensitivity.py</span>
+              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre><code># 1. Define analyte index sweep study across biological range
+analyte_study = spr.AnalyteSweepStudy(
+    analyte_indices=[1.330, 1.335, 1.340, 1.345, 1.350],  # Analyte RI values
+    wavelength_range=(8.5e-7, 1.35e-6),                     # Spectral interrogation range
+    wavelength_points=25,                                   # Wavelength points per RI
+    modes=2,                                                # Modes tracked per point
+    polarization="both",                                    # Track both polarizations
+    analyte_region_name="sensing_analyte_channel",          # Target channel
+    name="analyte_sensitivity_study"
+)
+
+# 2. Execute analyte sweep
+analyte_results = analyte_study.run(project, mesh=mesh)
+
+# 3. Calculate biosensor performance with explicit instrument resolution
+metrics = analyzer.calculate_sensitivity(
+    analyte_results,
+    instrument_resolution_nm=0.1,  # Required: OSA/spectrometer minimum step (0.1 nm)
+    snr_db=50.0                    # Detector SNR used for noise-conditioned LOD
+)
+
+print(f"Wavelength Sensitivity:  {metrics.wavelength_sensitivity_nm_per_riu:.1f} nm/RIU")
+print(f"Max Amplitude Sensitivity:{metrics.max_amplitude_sensitivity_per_riu:.2f} RIU^-1")
+print(f"Figure of Merit (FOM):   {metrics.figure_of_merit_per_riu:.1f} RIU^-1")
+print(f"Sensor Resolution (R):   {metrics.sensor_resolution_riu:.2e} RIU")</code></pre>
+          </div>
+
+          <h4>Function Signatures</h4>
+          <div class="function-signature">
+            spr.AnalyteSweepStudy(analyte_indices: List[float], wavelength_range: Tuple[float, float] = (6e-07, 1.6e-06), wavelength_points: int = 41, modes: int = 4, polarization: str = 'both', analyte_region_name: str = 'sensing_analyte_channel', name: str = 'analyte_sweep_study') -> AnalyteSweepStudy<br>
+            analyzer.calculate_sensitivity(analyte_results: StudyResult, instrument_resolution_nm: float = 0.1, snr_db: float = 50.0) -> SensitivityReport
+          </div>
+
+          <h4>Parameter Reference Table</h4>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Parameter / Metric</th>
+                  <th>Type &amp; Default</th>
+                  <th>Units</th>
+                  <th>Definition &amp; Scientific Role</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="param-name">analyte_indices</span></td>
+                  <td><span class="param-type">List[float]</span></td>
+                  <td><span class="param-unit">RIU</span></td>
+                  <td>Discrete series of calibrated refractive indices [<em>n</em><sub><em>a</em>,1</sub>, <em>n</em><sub><em>a</em>,2</sub>, &hellip;] representing analyte variations.</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">wavelength_range</span></td>
+                  <td><span class="param-type">Tuple[float, float]</span></td>
+                  <td><span class="param-unit">m</span></td>
+                  <td>Spectral span [&lambda;<sub>min</sub>, &lambda;<sub>max</sub>] encompassing the resonance shift across all analyte concentrations.</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">wavelength_points</span></td>
+                  <td><span class="param-type">int = 41</span></td>
+                  <td><span class="param-unit">count</span></td>
+                  <td>Number of spectral sampling points evaluated for each analyte index.</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">instrument_resolution_nm</span></td>
+                  <td><span class="param-type">float = 0.1</span></td>
+                  <td><span class="param-unit">nm</span></td>
+                  <td>Minimum resolvable wavelength step &Delta;&lambda;<sub>inst</sub> of the physical spectrometer. <em>Mandatory:</em> sensor resolution <em>R</em> = &Delta;&lambda;<sub>inst</sub> / <em>S</em><sub>&lambda;</sub> is meaningless without an explicit instrument resolution!</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">snr_db</span></td>
+                  <td><span class="param-type">float = 50.0</span></td>
+                  <td><span class="param-unit">dB</span></td>
+                  <td>Photodetector Signal-to-Noise Ratio (SNR) used to calculate Limit of Detection (LOD = 3&sigma;<sub>noise</sub> / <em>S</em><sub>&lambda;</sub>).</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">wavelength_sensitivity_nm_per_riu</span></td>
+                  <td><span class="param-type">float (output)</span></td>
+                  <td><span class="param-unit">nm/RIU</span></td>
+                  <td>Spectral sensitivity slope &part;&lambda;<sub>res</sub> / &part;<em>n<sub>a</sub></em>. Higher values enable detection of subtle biochemical concentrations.</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">max_amplitude_sensitivity_per_riu</span></td>
+                  <td><span class="param-type">float (output)</span></td>
+                  <td><span class="param-unit">RIU<sup>-1</sup></span></td>
+                  <td>Maximum relative transmission intensity change per refractive index unit at fixed interrogation wavelength. Eliminates the need for expensive spectrometers.</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">figure_of_merit_per_riu</span></td>
+                  <td><span class="param-type">float (output)</span></td>
+                  <td><span class="param-unit">RIU<sup>-1</sup></span></td>
+                  <td>Overall biosensor performance metric FOM = <em>S</em><sub>&lambda;</sub> / FWHM. Combines high sensitivity with narrow resonance linewidth.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ==================== STEP 8 ==================== -->
+        <div class="step-card" id="step-8">
+          <div class="step-header">
+            <div class="step-title-wrap">
+              <span class="step-number">Step 8 of 8</span>
+              <h3>Research Visualizations &amp; Multi-Format Dataset Export</h3>
+            </div>
+            <span class="step-badge">sprpcf.visualization &bull; sprpcf.results</span>
+          </div>
+
+          <p>
+            The final step generates publication-quality multi-panel scientific figures (300 DPI), renders the complete set of 6 electromagnetic vector field components, and exports raw numerical datasets into standardized CSV, HDF5, and standalone HTML formats for reproducible research.
+          </p>
+
+          <div class="code-block">
+            <div class="code-header">
+              <span>PYTHON &bull; step8_visualization_export.py</span>
+              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre><code># 1. Generate full 6-panel scientific research dashboard
+fig = spr.create_research_dashboard(
+    project=project,
+    mesh=mesh,
+    study_result=results,
+    analyzer=analyzer,
+    selected_mode_idx=0,
+    save_path="simulation_output/complete_simulation_dashboard.png",
+    dpi=300
+)
+
+# 2. Render all 6 vector electromagnetic field components (Ex, Ey, Ez, Hx, Hy, Hz)
+spr.plot_all_field_components(
+    mode=mode,
+    geometry=pcf,
+    save_path="simulation_output/all_field_components_mode0.png",
+    dpi=300
+)
+
+# 3. Export raw numerical simulation data to CSV and HDF5 formats
+spr.results.export_study_to_csv(results, "simulation_output/spectral_sweep_data.csv")
+spr.results.export_study_to_hdf5(results, "simulation_output/modal_fields_dataset.h5")
+
+# 4. Generate standalone self-contained HTML research summary report
+spr.generate_html_report(results, "simulation_output/simulation_summary_report.html")
+print("Scientific visualization and dataset export completed successfully!")</code></pre>
+          </div>
+
+          <h4>Function Signatures</h4>
+          <div class="function-signature">
+            spr.create_research_dashboard(project: Project, mesh: Any, study_result: StudyResult, analyzer: Optional[SPRAnalyzer] = None, sensitivity_report: Optional[Any] = None, selected_mode_idx: int = 0, selected_wl_step: Optional[int] = None, save_path: Optional[str] = None, dpi: int = 300) -> Figure<br>
+            spr.plot_all_field_components(mode: OpticalMode, geometry: Optional[Any] = None, save_path: Optional[str] = None, dpi: int = 300) -> Figure<br>
+            spr.results.export_study_to_csv(study_result: StudyResult, filepath: Union[str, Path]) -> None<br>
+            spr.results.export_study_to_hdf5(study_result: StudyResult, filepath: Union[str, Path]) -> None
+          </div>
+
+          <h4>Parameter Reference Table</h4>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Parameter</th>
+                  <th>Type &amp; Default</th>
+                  <th>Units</th>
+                  <th>Description &amp; Rendering Options</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="param-name">project</span></td>
+                  <td><span class="param-type">Project</span></td>
+                  <td><span class="param-unit">&mdash;</span></td>
+                  <td>Master project container providing physical geometry definitions and material assignments for dashboard rendering.</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">mesh</span></td>
+                  <td><span class="param-type">Mesh</span></td>
+                  <td><span class="param-unit">&mdash;</span></td>
+                  <td>Finite-element mesh plotted in the geometry and mesh quality subpanels with magnified gold interface insets.</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">study_result</span></td>
+                  <td><span class="param-type">StudyResult</span></td>
+                  <td><span class="param-unit">&mdash;</span></td>
+                  <td>Solved study instance containing spectral wavelengths, eigenvalues, modal losses, and 2D eigenvector fields.</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">analyzer</span></td>
+                  <td><span class="param-type">Optional[SPRAnalyzer]</span></td>
+                  <td><span class="param-unit">&mdash;</span></td>
+                  <td>SPR analyzer instance providing fitted Lorentzian curves, peak markers, FWHM intervals, and prominence metrics.</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">selected_mode_idx</span></td>
+                  <td><span class="param-type">int = 0</span></td>
+                  <td><span class="param-unit">index</span></td>
+                  <td>Index of the eigenmode plotted in field distribution subpanels (0 = fundamental core-guided mode).</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">save_path</span></td>
+                  <td><span class="param-type">Optional[str] = None</span></td>
+                  <td><span class="param-unit">filepath</span></td>
+                  <td>Destination file path. When provided, automatically saves the rendered figure in PNG, PDF, or SVG format.</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">dpi</span></td>
+                  <td><span class="param-type">int = 300</span></td>
+                  <td><span class="param-unit">dots/inch</span></td>
+                  <td>Raster rendering resolution (300 DPI satisfies publication standards for IEEE, OSA, Elsevier, and Nature journals).</td>
+                </tr>
+                <tr>
+                  <td><span class="param-name">filepath</span></td>
+                  <td><span class="param-type">Union[str, Path]</span></td>
+                  <td><span class="param-unit">filepath</span></td>
+                  <td>Target export path for tabular CSV matrices or hierarchical HDF5 datasets containing full nodal solution fields.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+      <!-- END SECTION: STEP-BY-STEP CODE TUTORIAL -->
+    
       <!-- SECTION: INTERACTIVE FIBER DESIGNER -->
       <section id="interactive-designer">
         <h2>🎨 Interactive PCF Geometry Designer</h2>
@@ -1291,6 +2303,7 @@ sprpcf run sensor_config.yaml -o output/</code></pre>
         <li><a href="#introduction">Introduction</a></li>
         <li><a href="#installation">Installation</a></li>
         <li><a href="#quickstart">Quick-Start Walkthrough</a></li>
+        <li><a href="#step-by-step-guide">Step-by-Step Code Guide</a></li>
         <li><a href="#interactive-designer">Fiber Designer Widget</a></li>
         <li><a href="#geometry-engine">1. Geometry Engine</a></li>
         <li><a href="#materials-dispersion">2. Materials & Dispersion</a></li>
