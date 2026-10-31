@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use SPR-PCF Studio in your research, please cite it as below."
+authors:
+  - family-names: "SPR-PCF Studio Developers"
+    given-names: "Scientific Engineering Team"
+title: "SPR-PCF Studio: A Universal Research-Grade Python Library for SPR Biosensor Design and Simulation"
+version: 0.1.0
+date-released: 2026-10-31
+url: "https://github.com/sprpcf/sprpcf"
+keywords:
+  - photonic crystal fiber
+  - surface plasmon resonance
+  - biosensor
+  - finite element method
+  - computational electromagnetics
+

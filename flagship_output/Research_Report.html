@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SPR-PCF Studio: D_Shaped_SPR_Biosensor Report</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 40px; background: #fdfdfd; color: #222; }
+        h1, h2, h3 { color: #1a365d; }
+        .metric-card { background: #edf2f7; padding: 15px 20px; border-radius: 8px; margin: 10px 0; border-left: 5px solid #3182ce; }
+        .metric-value { font-size: 22px; font-weight: bold; color: #2b6cb0; }
+        table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+        th, td { border: 1px solid #cbd5e0; padding: 10px; text-align: left; }
+        th { background: #ebf8ff; }
+        .tag { background: #e2e8f0; padding: 3px 8px; border-radius: 4px; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <h1>SPR-PCF Studio Research Report</h1>
+    <h2>Project: D_Shaped_SPR_Biosensor</h2>
+    <p>Universal SPR-PCF Biosensor Simulation and Mode Analysis Summary</p>
+
+    <h3>Key Performance Indicators</h3>
+    <div class="metric-card">
+        <div>Wavelength Sensitivity (S_&lambda;)</div>
+        <div class="metric-value">0.0 nm/RIU</div>
+        <small>Linear Fit R&sup2; = nan</small>
+    </div>
+    <div class="metric-card">
+        <div>Figure of Merit (FOM)</div>
+        <div class="metric-value">0.0 RIU<sup>-1</sup></div>
+    </div>
+    <div class="metric-card">
+        <div>Sensor Resolution</div>
+        <div class="metric-value">100000000000.0 RIU</div>
+    </div>
+
+    <h3>Geometry & Microstructure Specifications</h3>
+    <table>
+        <tr><th>Parameter</th><th>Value</th></tr>
+        <tr><td>Cladding Radius</td><td>6.5 &mu;m</td></tr>
+        <tr><td>Air Holes Count</td><td>15</td></tr>
+        <tr><td>Plasmonic Coatings</td><td>1</td></tr>
+        <tr><td>Analyte Channels</td><td>1</td></tr>
+        <tr><td>PML Boundary</td><td>1.2 &mu;m thickness</td></tr>
+    </table>
+
+    <h3>Assigned Materials</h3>
+    <table>
+        <tr><th>Domain Name</th><th>Assigned Material</th></tr>
+        <tr><td>cladding</td><td><span class='tag'>silica</span></td></tr><tr><td>fiber_core</td><td><span class='tag'>silica</span></td></tr><tr><td>plasmonic_metal_film</td><td><span class='tag'>gold</span></td></tr><tr><td>sensing_analyte_channel</td><td><span class='tag'>analyte_134</span></td></tr>
+    </table>
+
+    <hr/>
+    <footer>
+        <small>Generated automatically by SPR-PCF Studio. Reproducible scientific computational framework.</small>
+    </footer>
+</body>
+</html>
