@@ -5,6 +5,7 @@
 
 <p align="center">
   <a href="#-overview--core-philosophy"><b>Overview</b></a> •
+  <a href="docs/index.html"><b>Interactive Docs</b></a> •
   <a href="#-installation--distribution"><b>Installation & PyPI</b></a> •
   <a href="https://github.com/Sifatkhan-1915020/sprpcf/releases/tag/v0.1.0"><b>Release v0.1.0</b></a> •
   <a href="#-publication-grade-scientific-visualizations"><b>Visualizations</b></a> •
@@ -18,6 +19,9 @@
 <p align="center">
   <a href="https://github.com/Sifatkhan-1915020/sprpcf/releases/tag/v0.1.0">
     <img src="https://img.shields.io/badge/Release-v0.1.0-blue?style=for-the-badge&logo=github&logoColor=white" alt="GitHub Release v0.1.0" />
+  </a>
+  <a href="https://sifatkhan-1915020.github.io/sprpcf/">
+    <img src="https://img.shields.io/badge/Docs-Interactive%20HTML-8b5cf6?style=for-the-badge&logo=read-the-docs&logoColor=white" alt="Interactive HTML Docs" />
   </a>
   <a href="https://pypi.org/project/sprpcf/">
     <img src="https://img.shields.io/badge/PyPI-sprpcf-3775A9?style=for-the-badge&logo=pypi&logoColor=white" alt="PyPI Package" />

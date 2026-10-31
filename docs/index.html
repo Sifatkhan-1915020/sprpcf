@@ -1,0 +1,1571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SPR-PCF Studio Documentation | Research-Grade SPR Biosensor Framework</title>
+  <meta name="description" content="Complete interactive documentation for SPR-PCF Studio: A universal computational Python library for Surface Plasmon Resonance (SPR) Photonic Crystal Fiber (PCF) biosensor modeling, FEM simulation, and mode analysis.">
+
+  <!-- KaTeX for math rendering -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"
+          onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}]});"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f8fafc;
+      --bg-tertiary: #f1f5f9;
+      --border-color: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --text-dim: #94a3b8;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-light: #eff6ff;
+      --accent: #8b5cf6;
+      --success: #10b981;
+      --success-light: #ecfdf5;
+      --warning: #f59e0b;
+      --code-bg: #0f172a;
+      --code-text: #e2e8f0;
+      --sidebar-width: 290px;
+      --toc-width: 250px;
+      --header-height: 68px;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --radius: 10px;
+    }
+
+    [data-theme="dark"] {
+      --bg-primary: #090d16;
+      --bg-secondary: #0f172a;
+      --bg-tertiary: #1e293b;
+      --border-color: #1e293b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --primary: #3b82f6;
+      --primary-hover: #60a5fa;
+      --primary-light: rgba(59, 130, 246, 0.15);
+      --accent: #a78bfa;
+      --code-bg: #070b12;
+      --code-text: #cbd5e1;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      line-height: 1.65;
+      overflow-x: hidden;
+      transition: background-color 0.25s, color 0.25s;
+    }
+
+    /* TOP HEADER */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--header-height);
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      z-index: 100;
+      transition: background-color 0.25s, border-color 0.25s;
+    }
+    [data-theme="dark"] header {
+      background: rgba(9, 13, 22, 0.85);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--text-main);
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 1.35rem;
+      letter-spacing: -0.02em;
+    }
+    .brand-badge {
+      font-size: 0.72rem;
+      padding: 2px 8px;
+      background: var(--primary-light);
+      color: var(--primary);
+      border-radius: 9999px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .search-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .search-box input {
+      padding: 0.45rem 0.9rem 0.45rem 2.2rem;
+      border-radius: 9999px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-secondary);
+      color: var(--text-main);
+      font-size: 0.85rem;
+      outline: none;
+      width: 220px;
+      transition: all 0.2s;
+    }
+    .search-box input:focus {
+      width: 280px;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+    .search-icon {
+      position: absolute;
+      left: 0.75rem;
+      width: 15px; height: 15px;
+      fill: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .btn-icon {
+      background: none;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 6px 10px;
+      cursor: pointer;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+    .btn-icon:hover {
+      background: var(--bg-tertiary);
+      border-color: var(--text-dim);
+    }
+
+    /* MAIN CONTAINER */
+    .docs-container {
+      display: flex;
+      margin-top: var(--header-height);
+      min-height: calc(100vh - var(--header-height));
+    }
+
+    /* LEFT SIDEBAR NAVIGATION */
+    .sidebar {
+      width: var(--sidebar-width);
+      position: fixed;
+      top: var(--header-height);
+      bottom: 0;
+      left: 0;
+      background: var(--bg-secondary);
+      border-right: 1px solid var(--border-color);
+      overflow-y: auto;
+      padding: 1.5rem 1rem 3rem 1.25rem;
+      z-index: 90;
+      transition: all 0.25s;
+    }
+    .sidebar-group {
+      margin-bottom: 1.5rem;
+    }
+    .sidebar-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+      color: var(--text-dim);
+      margin-bottom: 0.5rem;
+      padding-left: 0.5rem;
+    }
+    .sidebar-links {
+      list-style: none;
+    }
+    .sidebar-link {
+      display: block;
+      padding: 0.45rem 0.65rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      border-radius: 6px;
+      transition: all 0.15s;
+    }
+    .sidebar-link:hover {
+      color: var(--primary);
+      background: var(--primary-light);
+    }
+    .sidebar-link.active {
+      color: var(--primary);
+      background: var(--primary-light);
+      font-weight: 600;
+      border-left: 3px solid var(--primary);
+    }
+
+    /* MAIN CONTENT AREA */
+    .content {
+      margin-left: var(--sidebar-width);
+      margin-right: var(--toc-width);
+      padding: 2.5rem 3.5rem 5rem;
+      max-width: 950px;
+      width: 100%;
+    }
+
+    /* RIGHT ON-PAGE TABLE OF CONTENTS */
+    .toc {
+      width: var(--toc-width);
+      position: fixed;
+      top: var(--header-height);
+      bottom: 0;
+      right: 0;
+      padding: 2rem 1.5rem;
+      overflow-y: auto;
+      border-left: 1px solid var(--border-color);
+      font-size: 0.82rem;
+    }
+    .toc-title {
+      font-weight: 700;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-dim);
+      margin-bottom: 0.75rem;
+    }
+    .toc ul {
+      list-style: none;
+    }
+    .toc li {
+      margin-bottom: 0.45rem;
+    }
+    .toc a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.15s;
+      line-height: 1.4;
+      display: block;
+    }
+    .toc a:hover {
+      color: var(--primary);
+    }
+
+    /* TYPOGRAPHY */
+    h1, h2, h3, h4 {
+      color: var(--text-main);
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    h1 { font-size: 2.6rem; line-height: 1.15; margin-bottom: 1rem; }
+    h2 { font-size: 1.8rem; margin-top: 3rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border-color); }
+    h3 { font-size: 1.35rem; margin-top: 2rem; margin-bottom: 0.75rem; }
+    h4 { font-size: 1.1rem; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+    p { margin-bottom: 1.25rem; color: var(--text-main); }
+    a { color: var(--primary); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* HERO BANNER */
+    .hero {
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(139, 92, 246, 0.08) 100%);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 3rem;
+      margin-bottom: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--primary-light);
+      color: var(--primary);
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+    .hero h1 {
+      font-size: 2.8rem;
+      background: linear-gradient(135deg, var(--text-main) 30%, var(--primary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 1rem;
+    }
+    .hero p {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      max-width: 650px;
+      line-height: 1.6;
+      margin-bottom: 1.75rem;
+    }
+    .hero-cta {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: white !important;
+      padding: 0.75rem 1.6rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      text-decoration: none;
+      transform: translateY(-1px);
+    }
+    .btn-secondary {
+      background: var(--bg-primary);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      padding: 0.75rem 1.6rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s;
+    }
+    .btn-secondary:hover {
+      background: var(--bg-tertiary);
+      text-decoration: none;
+    }
+
+    /* CARDS & GRIDS */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      transition: all 0.2s;
+    }
+    .card:hover {
+      border-color: var(--primary);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+    .card-icon {
+      font-size: 1.8rem;
+      margin-bottom: 0.75rem;
+      display: inline-block;
+    }
+    .card h3 {
+      margin-top: 0;
+      margin-bottom: 0.5rem;
+      font-size: 1.15rem;
+    }
+    .card p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 0;
+    }
+
+    /* INTERACTIVE SIMULATOR WIDGETS */
+    .interactive-widget {
+      background: var(--bg-secondary);
+      border: 2px solid var(--primary);
+      border-radius: 14px;
+      padding: 1.75rem;
+      margin: 2rem 0;
+      box-shadow: var(--shadow-md);
+    }
+    .widget-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.75rem;
+    }
+    .widget-title {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--primary);
+    }
+    .widget-badge {
+      background: var(--success-light);
+      color: var(--success);
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+    }
+    .widget-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+    @media (max-width: 800px) {
+      .widget-body { grid-template-columns: 1fr; }
+    }
+    .control-group {
+      margin-bottom: 1rem;
+    }
+    .control-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 0.35rem;
+      color: var(--text-main);
+    }
+    .slider {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: var(--border-color);
+      outline: none;
+      -webkit-appearance: none;
+    }
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: var(--primary);
+      cursor: pointer;
+      box-shadow: 0 0 0 3px var(--primary-light);
+      transition: all 0.15s;
+    }
+    .slider::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+    }
+    .canvas-container {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 260px;
+    }
+    .widget-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+    .stat-box {
+      background: var(--bg-tertiary);
+      border-radius: 8px;
+      padding: 0.6rem 0.8rem;
+    }
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .stat-val {
+      font-family: 'Fira Code', monospace;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    /* CODE BLOCKS */
+    .code-container {
+      position: relative;
+      background: var(--code-bg);
+      border-radius: 10px;
+      margin: 1.5rem 0;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+    }
+    .code-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.5rem 1rem;
+      background: rgba(255, 255, 255, 0.04);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      font-family: 'Fira Code', monospace;
+    }
+    .copy-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: #e2e8f0;
+      padding: 4px 10px;
+      border-radius: 5px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s;
+    }
+    .copy-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+    pre {
+      padding: 1.25rem 1rem;
+      overflow-x: auto;
+      font-family: 'Fira Code', 'Courier New', monospace;
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: var(--code-text);
+    }
+    code {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.88em;
+    }
+    p code, li code, td code {
+      background: var(--bg-tertiary);
+      color: var(--primary);
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid var(--border-color);
+    }
+
+    /* INTERACTIVE TABS */
+    .tab-container {
+      margin: 1.5rem 0;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .tab-nav {
+      display: flex;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+      overflow-x: auto;
+    }
+    .tab-btn {
+      padding: 0.75rem 1.25rem;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 0.88rem;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+    .tab-btn:hover {
+      color: var(--primary);
+    }
+    .tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+      background: var(--bg-primary);
+    }
+    .tab-content {
+      display: none;
+      padding: 1.25rem;
+      background: var(--bg-primary);
+    }
+    .tab-content.active {
+      display: block;
+    }
+
+    /* TABLES */
+    .table-wrapper {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      text-align: left;
+    }
+    th {
+      background: var(--bg-secondary);
+      padding: 0.85rem 1rem;
+      font-weight: 700;
+      color: var(--text-main);
+      border-bottom: 2px solid var(--border-color);
+    }
+    td {
+      padding: 0.8rem 1rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--bg-tertiary); }
+
+    /* CALLOUT BOXES */
+    .callout {
+      padding: 1.25rem 1.5rem;
+      border-radius: 8px;
+      margin: 1.5rem 0;
+      border-left: 4px solid;
+    }
+    .callout-info {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--text-main);
+    }
+    .callout-success {
+      background: var(--success-light);
+      border-color: var(--success);
+      color: var(--text-main);
+    }
+    .callout-warning {
+      background: rgba(245, 158, 11, 0.1);
+      border-color: var(--warning);
+      color: var(--text-main);
+    }
+    .callout-title {
+      font-weight: 700;
+      margin-bottom: 0.35rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 1200px) {
+      .toc { display: none; }
+      .content { margin-right: 0; }
+    }
+    @media (max-width: 900px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+      .sidebar.open {
+        transform: translateX(0);
+      }
+      .content { margin-left: 0; padding: 1.5rem; }
+      .hero { padding: 1.5rem; }
+      .hero h1 { font-size: 2rem; }
+    }
+
+    /* ACCORDION */
+    details {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      margin-bottom: 0.85rem;
+      overflow: hidden;
+      transition: all 0.2s;
+    }
+    details[open] {
+      border-color: var(--primary);
+      box-shadow: var(--shadow-sm);
+    }
+    summary {
+      padding: 0.85rem 1.25rem;
+      font-weight: 600;
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    summary:hover {
+      background: var(--bg-tertiary);
+    }
+    .details-body {
+      padding: 1rem 1.25rem;
+      border-top: 1px solid var(--border-color);
+      background: var(--bg-primary);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <a href="#" class="brand">
+      <span>🔬 SPR-PCF Studio</span>
+      <span class="brand-badge">v0.1.0</span>
+    </a>
+
+    <div class="search-box">
+      <svg class="search-icon" viewBox="0 0 24 24"><path d="M21.71 20.29l-5.4-5.4a8 8 0 1 0-1.42 1.42l5.4 5.4a1 1 0 0 0 1.42-1.42zM4 10a6 6 0 1 1 6 6 6 6 0 0 1-6-6z"/></svg>
+      <input type="text" id="docSearch" placeholder="Search documentation..." onkeyup="filterDocs()">
+    </div>
+
+    <div class="header-actions">
+      <a href="https://github.com/Sifatkhan-1915020/sprpcf" target="_blank" class="btn-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        GitHub
+      </a>
+      <a href="https://pypi.org/project/sprpcf/" target="_blank" class="btn-icon">
+        📦 PyPI
+      </a>
+      <button class="btn-icon" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+        🌓 Theme
+      </button>
+    </div>
+  </header>
+
+  <!-- CONTAINER -->
+  <div class="docs-container">
+
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-group">
+        <div class="sidebar-title">Getting Started</div>
+        <ul class="sidebar-links">
+          <li><a href="#introduction" class="sidebar-link active">Introduction</a></li>
+          <li><a href="#installation" class="sidebar-link">Installation</a></li>
+          <li><a href="#quickstart" class="sidebar-link">Quick-Start Walkthrough</a></li>
+          <li><a href="#interactive-designer" class="sidebar-link">Interactive Fiber Designer</a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-group">
+        <div class="sidebar-title">Core Architecture</div>
+        <ul class="sidebar-links">
+          <li><a href="#geometry-engine" class="sidebar-link">1. Geometry & PCF Templates</a></li>
+          <li><a href="#materials-dispersion" class="sidebar-link">2. Material Engineering</a></li>
+          <li><a href="#meshing-validation" class="sidebar-link">3. Mesh Quality Validation</a></li>
+          <li><a href="#full-vector-fem" class="sidebar-link">4. Full-Vector Maxwell FEM</a></li>
+          <li><a href="#mode-tracking" class="sidebar-link">5. Modal Overlap & Tracking</a></li>
+          <li><a href="#spr-analysis" class="sidebar-link">6. SPR & Sensitivity Analysis</a></li>
+          <li><a href="#visualizations" class="sidebar-link">7. Scientific Dashboards</a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-group">
+        <div class="sidebar-title">Interactive Labs</div>
+        <ul class="sidebar-links">
+          <li><a href="#interactive-spr-lab" class="sidebar-link">Interactive SPR Lab</a></li>
+          <li><a href="#code-playground" class="sidebar-link">API Code Playground</a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-group">
+        <div class="sidebar-title">Reference</div>
+        <ul class="sidebar-links">
+          <li><a href="#api-reference" class="sidebar-link">Complete API Reference</a></li>
+          <li><a href="#cli-reference" class="sidebar-link">CLI Commands</a></li>
+          <li><a href="#theory-compendium" class="sidebar-link">Maxwell Theory Compendium</a></li>
+          <li><a href="#citation" class="sidebar-link">Citation & License</a></li>
+        </ul>
+      </div>
+    </aside>
+
+    <!-- CENTER CONTENT -->
+    <main class="content">
+
+      <!-- HERO SECTION -->
+      <section class="hero" id="introduction">
+        <div class="hero-badge">⚡ Full-Vector Maxwell Finite-Element Framework</div>
+        <h1>SPR-PCF Studio Documentation</h1>
+        <p>A generalized, modular, and publication-ready computational platform for designing, simulating, analyzing, and optimizing Surface Plasmon Resonance (SPR) Photonic Crystal Fiber (PCF) biosensors.</p>
+        <div class="hero-cta">
+          <a href="#quickstart" class="btn-primary">Get Started in 5 Minutes →</a>
+          <a href="#interactive-designer" class="btn-secondary">Explore Interactive Fiber Designer</a>
+          <a href="https://github.com/Sifatkhan-1915020/sprpcf/releases/tag/v0.1.0" target="_blank" class="btn-secondary">Download v0.1.0 Release</a>
+        </div>
+      </section>
+
+      <!-- KEY HIGHLIGHTS -->
+      <div class="grid-3">
+        <div class="card">
+          <span class="card-icon">📐</span>
+          <h3>Arbitrary Geometries</h3>
+          <p>Parametric D-shaped, dual-channel, hollow-core, and hexagonal PCF geometries with analytical chord verification.</p>
+        </div>
+        <div class="card">
+          <span class="card-icon">⚡</span>
+          <h3>Full-Vector Physics</h3>
+          <p>Direct transverse Helmholtz eigensolver with stretched-coordinate PML absorbing boundaries and Poynting power flow.</p>
+        </div>
+        <div class="card">
+          <span class="card-icon">🎯</span>
+          <h3>Zero Synthetic Data</h3>
+          <p>Every spectrum and sensitivity metric is computed strictly from real finite-element solutions with parameter uncertainties.</p>
+        </div>
+      </div>
+
+      <!-- SECTION: INSTALLATION -->
+      <section id="installation">
+        <h2>📦 Installation</h2>
+        <p>SPR-PCF Studio supports Python 3.10, 3.11, and 3.12 across Windows, Linux, and macOS.</p>
+
+        <div class="tab-container">
+          <div class="tab-nav">
+            <button class="tab-btn active" onclick="switchTab(event, 'tab-pip')">PyPI (Recommended)</button>
+            <button class="tab-btn" onclick="switchTab(event, 'tab-wheel')">Direct Wheel Release</button>
+            <button class="tab-btn" onclick="switchTab(event, 'tab-source')">Source Clone</button>
+          </div>
+          <div id="tab-pip" class="tab-content active">
+            <p>Install standard package via pip:</p>
+            <div class="code-container">
+              <div class="code-header"><span>BASH</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+              <pre><code># Standard installation
+pip install sprpcf
+
+# Full installation with optional Gmsh and NGSolve backends
+pip install "sprpcf[all]"</code></pre>
+            </div>
+          </div>
+          <div id="tab-wheel" class="tab-content">
+            <p>Download and install the official pre-built wheel directly from the GitHub Release:</p>
+            <div class="code-container">
+              <div class="code-header"><span>BASH</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+              <pre><code>pip install https://github.com/Sifatkhan-1915020/sprpcf/releases/download/v0.1.0/sprpcf-0.1.0-py3-none-any.whl</code></pre>
+            </div>
+          </div>
+          <div id="tab-source" class="tab-content">
+            <p>Clone and install in editable mode for research and development:</p>
+            <div class="code-container">
+              <div class="code-header"><span>BASH</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+              <pre><code>git clone https://github.com/Sifatkhan-1915020/sprpcf.git
+cd sprpcf
+python -m venv .venv
+source .venv/bin/activate       # On Windows: .venv\Scripts\activate
+pip install -e .[test]
+pytest -v tests/                # Verify 26/26 tests passing</code></pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION: QUICKSTART -->
+      <section id="quickstart">
+        <h2>🚀 Quick-Start Walkthrough</h2>
+        <p>A complete SPR-PCF biosensor simulation involves creating a geometry, assigning experimental dispersion materials, discretizing the mesh, solving transverse optical modes across wavelengths, and fitting the plasmonic resonance.</p>
+
+        <div class="code-container">
+          <div class="code-header"><span>PYTHON &bull; run_simulation.py</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre><code>import sprpcf as spr
+
+# 1. Construct parametric D-Shaped PCF
+project = spr.Project("D_Shaped_Biosensor")
+geom = spr.DShapedPCF(
+    pitch=2.0e-6,                 # Hole-to-hole pitch (2.0 um)
+    rings=2,                      # 2 concentric hexagonal rings
+    hole_radius=0.5e-6,           # Air hole radius (0.5 um)
+    polish_depth=3.2e-6,          # Polish depth to flat (3.2 um)
+    metal_thickness=40.0e-9,      # 40 nm Gold film
+    adhesion_thickness=2.5e-9,    # 2.5 nm Titanium adhesion layer
+    cladding_radius=6.5e-6,       # Silica cladding radius (6.5 um)
+)
+geom.configure_pml(thickness=1.2e-6)
+project.set_geometry(geom)
+
+# 2. Assign experimental dispersion materials
+project.assign_material("cladding", "silica")                 # Malitson Sellmeier
+project.assign_material("fiber_core", "silica")
+project.assign_material("plasmonic_metal_film", "gold")       # Rakic Drude-Lorentz
+project.assign_material("sensing_analyte_channel", spr.AnalyteMaterial("sample", 1.330))
+
+# 3. Discretize domain with boundary refinement
+mesh = project.generate_mesh(backend="native", global_size=0.5e-6)
+
+# 4. Adaptive coarse-to-fine spectral sweep around SPR resonance band
+study = spr.AdaptiveWavelengthSweepStudy(
+    start_wavelength_m=950e-9,
+    stop_wavelength_m=1250e-9,
+    coarse_points=9,
+    fine_window_nm=80.0,
+    fine_points=17,
+    modes=2,
+)
+study.set_solver(backend="native", grid_points=48, tolerance=1e-6)
+project.add_study(study)
+results = project.run()
+
+# 5. Extract resonance peak with Lorentzian fitting & sampling audit
+analyzer = spr.SPRAnalyzer(results.results)
+peak = analyzer.find_resonance(mode_idx=0)
+print(f"Resonance Peak:    {peak.wavelength_nm:.2f} nm")
+print(f"Linewidth (FWHM):   {peak.fwhm_nm:.2f} nm")
+print(f"Sampling Adequate: {peak.is_adequately_sampled} ({peak.fit_result.points_in_fwhm} pts in FWHM)")
+
+# 6. Render publication-grade 8-panel dashboard
+spr.create_research_dashboard(
+    project=project,
+    mesh=mesh,
+    study_result=results,
+    analyzer=analyzer,
+    selected_mode_idx=0,
+    save_path="simulation_output/complete_simulation_dashboard.png",
+    dpi=300,
+)</code></pre>
+        </div>
+      </section>
+
+      <!-- SECTION: INTERACTIVE FIBER DESIGNER -->
+      <section id="interactive-designer">
+        <h2>🎨 Interactive PCF Geometry Designer</h2>
+        <p>Adjust the sliders below to explore parametric D-shaped PCF geometry modeling. The SVG cross-section and analytical chord verification will update in real time.</p>
+
+        <div class="interactive-widget">
+          <div class="widget-header">
+            <div class="widget-title"><span>📐</span> Parametric D-Shaped PCF Visualizer</div>
+            <span class="widget-badge" id="geomStatus">Validated</span>
+          </div>
+
+          <div class="widget-body">
+            <!-- Controls -->
+            <div>
+              <div class="control-group">
+                <div class="control-label">
+                  <span>Cladding Radius ($R$)</span>
+                  <span id="valR">6.5 &mu;m</span>
+                </div>
+                <input type="range" class="slider" id="sliderR" min="5.0" max="8.0" step="0.1" value="6.5" oninput="updateGeometrySim()">
+              </div>
+
+              <div class="control-group">
+                <div class="control-label">
+                  <span>Polish Depth ($d_c$)</span>
+                  <span id="valDc">3.2 &mu;m</span>
+                </div>
+                <input type="range" class="slider" id="sliderDc" min="1.5" max="4.5" step="0.1" value="3.2" oninput="updateGeometrySim()">
+              </div>
+
+              <div class="control-group">
+                <div class="control-label">
+                  <span>Lattice Pitch ($\Lambda$)</span>
+                  <span id="valPitch">2.0 &mu;m</span>
+                </div>
+                <input type="range" class="slider" id="sliderPitch" min="1.5" max="3.0" step="0.1" value="2.0" oninput="updateGeometrySim()">
+              </div>
+
+              <div class="control-group">
+                <div class="control-label">
+                  <span>Gold Thickness ($t_{\text{Au}}$)</span>
+                  <span id="valAu">40 nm</span>
+                </div>
+                <input type="range" class="slider" id="sliderAu" min="20" max="70" step="5" value="40" oninput="updateGeometrySim()">
+              </div>
+
+              <div class="widget-stats">
+                <div class="stat-box">
+                  <div class="stat-label">Chord Width ($L$)</div>
+                  <div class="stat-val" id="resChord">11.32 &mu;m</div>
+                </div>
+                <div class="stat-box">
+                  <div class="stat-label">Hole Clearance</div>
+                  <div class="stat-val" id="resClear">1.00 &mu;m</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Canvas SVG -->
+            <div class="canvas-container">
+              <svg id="pcfSvg" width="280" height="280" viewBox="-140 -140 280 280">
+                <!-- SVG dynamically updated via JavaScript -->
+              </svg>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION: 1. GEOMETRY ENGINE -->
+      <section id="geometry-engine">
+        <h2>1. Parametric Geometry & PCF Templates</h2>
+        <p>The geometry module (<code>sprpcf.geometry</code>) provides Constructive Solid Geometry (CSG) primitives and predefined fiber templates.</p>
+
+        <h3>Analytical Chord Verification</h3>
+        <p>For side-polished D-shaped PCFs, the flat chord width must strictly conform to the circle-secant theorem:</p>
+        $$L_{\text{chord}} = 2 \sqrt{R_{\text{clad}}^2 - d_c^2}$$
+        <p>Whenever a D-shaped PCF is instantiated, <code>validate_geometry(geom)</code> verifies that the polygon boundaries and coordinate clearances match this analytical equation within $< 0.01\%$ tolerance.</p>
+
+        <h3>Nanoscale Multilayer Coatings</h3>
+        <p>Sensors can incorporate adhesion sub-layers (e.g. 2.5 nm Titanium or Chromium) beneath plasmonic gold films to emulate realistic nanofabrication conditions.</p>
+      </section>
+
+      <!-- SECTION: 2. MATERIALS & DISPERSION -->
+      <section id="materials-dispersion">
+        <h2>2. Optical Materials & Dispersion Engineering</h2>
+        <p>Full-vector electromagnetic simulations require physically accurate wavelength-dependent complex permittivities $\varepsilon_r(\lambda) = \varepsilon' - i \varepsilon''$.</p>
+
+        <div class="grid-2">
+          <div class="card">
+            <h3>Fused Silica (Malitson 1965)</h3>
+            <p>Three-term Sellmeier dispersion:</p>
+            $$n^2(\lambda) = 1 + \sum_{i=1}^3 \frac{B_i \lambda^2}{\lambda^2 - C_i}$$
+          </div>
+          <div class="card">
+            <h3>Plasmonic Gold (Rakic 1998)</h3>
+            <p>Dual Drude-Lorentz optical model:</p>
+            $$\varepsilon(\omega) = 1 - \frac{f_0 \omega_p^2}{\omega(\omega - i \Gamma_0)} + \sum_{j=1}^k \frac{f_j \omega_p^2}{\omega_j^2 - \omega^2 + i \omega \Gamma_j}$$
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION: 3. MESHING & VALIDATION -->
+      <section id="meshing-validation">
+        <h2>3. Mesh Quality Validation & Interface Refinement</h2>
+        <p>High-accuracy plasmonic modeling requires fine element sizing at the metal-dielectric boundary where evanescent fields decay exponentially.</p>
+
+        <h3>Inradius-to-Circumradius Element Metric</h3>
+        <p>Element quality is rigorously measured via the normalized circumcircle-to-incircle radius ratio:</p>
+        $$q = \frac{2 r_{\text{in}}}{r_{\text{out}}} = \frac{(b + c - a)(a + c - b)(a + b - c)}{a b c}$$
+        <p>where $q=1.0$ corresponds to an equilateral triangle. Mesh elements inside the gold film layer are refined to sub-micron scales ($15{,}000+$ interface elements).</p>
+      </section>
+
+      <!-- SECTION: 4. FULL-VECTOR MAXWELL FEM -->
+      <section id="full-vector-fem">
+        <h2>4. Full-Vector Maxwell Finite-Element Formulation</h2>
+        <p>The core electromagnetic solver (<code>FullVectorMaxwellSolver</code>) solves the transverse wave equation derived directly from Maxwell's curl laws:</p>
+
+        $$\begin{bmatrix} P_{xx} & P_{xy} \\ P_{yx} & P_{yy} \end{bmatrix} \begin{bmatrix} E_x \\ E_y \end{bmatrix} = \beta^2 \begin{bmatrix} E_x \\ E_y \end{bmatrix}$$
+
+        <h3>Faraday Law Sign Inversion & Poynting Vector</h3>
+        <p>Assuming the time-harmonic convention $\exp[j(\omega t - \beta z)]$, Maxwell's curl equation $\nabla \times \mathbf{E} = -j \omega \mu_0 \mathbf{H}$ yields:</p>
+        $$H_x = \frac{1}{\omega \mu_0}\left(-\beta E_y + j \frac{\partial E_z}{\partial y}\right), \quad H_y = \frac{1}{\omega \mu_0}\left(\beta E_x - j \frac{\partial E_z}{\partial x}\right)$$
+
+        <p>The longitudinal Poynting vector $S_z = \frac{1}{2} \text{Re}(E_x H_y^* - E_y H_x^*)$ is integrated across the cross-section:</p>
+        $$P_{\text{total}} = \iint S_z \, dx \, dy > 0$$
+        <p>verifying forward-propagating electromagnetic energy.</p>
+      </section>
+
+      <!-- SECTION: 5. MODE TRACKING & OVERLAP -->
+      <section id="mode-tracking">
+        <h2>5. Modal Overlap & Mode Tracking</h2>
+        <p>As wavelength sweeps across the plasmonic coupling band, core-guided and SPP modes undergo avoided crossings. Modes are tracked by calculating the spatial Hermitian overlap integral:</p>
+
+        $$\eta_{12} = \frac{\left|\iint (\mathbf{E}_1 \cdot \mathbf{E}_2^*) \, dA\right|^2}{\iint |\mathbf{E}_1|^2 \, dA \cdot \iint |\mathbf{E}_2|^2 \, dA}$$
+      </section>
+
+      <!-- SECTION: 6. SPR & SENSITIVITY ANALYSIS -->
+      <section id="spr-analysis">
+        <h2>6. SPR Resonance Extraction & Sensor Performance</h2>
+        <p>Confinement loss is calculated from the imaginary effective index $\text{Im}(n_{\text{eff}})$:</p>
+        $$\alpha_{\text{dB/cm}} = 8.68589 \cdot 10^{-2} \cdot \frac{2\pi}{\lambda} \cdot \text{Im}(n_{\text{eff}})$$
+
+        <h3>Nonlinear Lorentzian Lineshape Fitting</h3>
+        <p>Discrete loss points are fitted to an analytical Lorentzian profile:</p>
+        $$\alpha(\lambda) = y_0 + \frac{2 A}{\pi} \frac{\gamma}{4(\lambda - \lambda_0)^2 + \gamma^2} + m(\lambda - \lambda_0)$$
+        <p>extracting the continuous resonance wavelength $\lambda_0$, linewidth $\gamma$ (FWHM), and covariance uncertainties ($\pm \sigma$).</p>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ Strict Sampling Adequacy Rule</div>
+          FWHM is marked as validated (<code>is_adequately_sampled: True</code>) only if at least <b>5 discrete simulation points</b> fall inside the FWHM interval. Undersampled sweeps are prominently flagged.
+        </div>
+      </section>
+
+      <!-- SECTION: INTERACTIVE SPR LAB -->
+      <section id="interactive-spr-lab">
+        <h2>🧪 Interactive SPR Resonance & Sensitivity Explorer</h2>
+        <p>Test multi-analyte refractive index shifts and calculate wavelength sensitivity ($S_\lambda$) and Figure of Merit (FOM) live:</p>
+
+        <div class="interactive-widget">
+          <div class="widget-header">
+            <div class="widget-title"><span>📈</span> SPR Sensitivity & Resonance Calculator</div>
+            <span class="widget-badge">Interactive Simulation</span>
+          </div>
+
+          <div class="widget-body">
+            <div>
+              <div class="control-group">
+                <div class="control-label">
+                  <span>Baseline Analyte Index ($n_{a1}$)</span>
+                  <span id="valNa1">1.330</span>
+                </div>
+                <input type="range" class="slider" id="sliderNa1" min="1.300" max="1.340" step="0.005" value="1.330" oninput="updateSprLab()">
+              </div>
+
+              <div class="control-group">
+                <div class="control-label">
+                  <span>Perturbed Analyte Index ($n_{a2}$)</span>
+                  <span id="valNa2">1.340</span>
+                </div>
+                <input type="range" class="slider" id="sliderNa2" min="1.335" max="1.370" step="0.005" value="1.340" oninput="updateSprLab()">
+              </div>
+
+              <div class="control-group">
+                <div class="control-label">
+                  <span>Gold Film Thickness ($t$)</span>
+                  <span id="valGoldThick">40 nm</span>
+                </div>
+                <input type="range" class="slider" id="sliderGoldThick" min="30" max="60" step="5" value="40" oninput="updateSprLab()">
+              </div>
+
+              <div class="widget-stats">
+                <div class="stat-box">
+                  <div class="stat-label">Wavelength Sensitivity ($S_\lambda$)</div>
+                  <div class="stat-val" id="resSens">122.8 nm/RIU</div>
+                </div>
+                <div class="stat-box">
+                  <div class="stat-label">Figure of Merit (FOM)</div>
+                  <div class="stat-val" id="resFom">4.4 RIU&sup1;</div>
+                </div>
+                <div class="stat-box">
+                  <div class="stat-label">Resonance Shift ($\Delta \lambda$)</div>
+                  <div class="stat-val" id="resShift">+1.23 nm</div>
+                </div>
+                <div class="stat-box">
+                  <div class="stat-label">Resolution ($\Delta \lambda_{\text{inst}}=0.1\text{nm}$)</div>
+                  <div class="stat-val" id="resResol">8.14e-4 RIU</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Chart Canvas -->
+            <div class="canvas-container">
+              <svg id="sprSvg" width="300" height="240" viewBox="0 0 300 240">
+                <!-- SVG dynamically rendered via JavaScript -->
+              </svg>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION: 7. VISUALIZATIONS -->
+      <section id="visualizations">
+        <h2>7. Scientific Dashboards & Visualizations</h2>
+        <p>SPR-PCF Studio generates publication-grade 300-DPI figures and provides an interactive GUI.</p>
+
+        <h3>8-Panel Research Dashboard</h3>
+        <p>Generated via <code>sprpcf.create_research_dashboard()</code>:</p>
+        <div style="text-align: center; margin: 1.5rem 0;">
+          <img src="assets/images/complete_simulation_dashboard.png" alt="8-Panel Scientific Dashboard" style="width: 100%; max-width: 850px; border-radius: 8px; border: 1px solid var(--border-color); box-shadow: var(--shadow-md);">
+        </div>
+
+        <h3>6-Panel Vector Field Component Breakdown</h3>
+        <p>Generated via <code>sprpcf.plot_all_field_components()</code>:</p>
+        <div style="text-align: center; margin: 1.5rem 0;">
+          <img src="assets/images/all_field_components_mode0.png" alt="6-Component Field Breakdown" style="width: 100%; max-width: 850px; border-radius: 8px; border: 1px solid var(--border-color); box-shadow: var(--shadow-md);">
+        </div>
+      </section>
+
+      <!-- SECTION: API REFERENCE -->
+      <section id="api-reference">
+        <h2>📚 API Reference Table</h2>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Class / Function</th>
+                <th>Module</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>Project(name)</code></td>
+                <td><code>sprpcf.core</code></td>
+                <td>Primary project container orchestrating geometry, materials, and studies.</td>
+              </tr>
+              <tr>
+                <td><code>DShapedPCF(...)</code></td>
+                <td><code>sprpcf.geometry</code></td>
+                <td>Side-polished PCF template with planar metal layer, adhesion layer, and analyte cut.</td>
+              </tr>
+              <tr>
+                <td><code>DualChannelPCF(...)</code></td>
+                <td><code>sprpcf.geometry</code></td>
+                <td>Photonic crystal fiber with two large metal-coated microfluidic channels.</td>
+              </tr>
+              <tr>
+                <td><code>FullVectorMaxwellSolver(...)</code></td>
+                <td><code>sprpcf.solvers</code></td>
+                <td>Rigorous full-vector transverse Maxwell frequency-domain eigenmode solver.</td>
+              </tr>
+              <tr>
+                <td><code>AdaptiveWavelengthSweepStudy(...)</code></td>
+                <td><code>sprpcf.studies</code></td>
+                <td>Two-stage adaptive coarse-to-fine spectral wavelength sweep engine.</td>
+              </tr>
+              <tr>
+                <td><code>SPRAnalyzer(results)</code></td>
+                <td><code>sprpcf.spr</code></td>
+                <td>Extracts resonance peaks, Lorentzian fitting, sensitivity, and FOM.</td>
+              </tr>
+              <tr>
+                <td><code>create_research_dashboard(...)</code></td>
+                <td><code>sprpcf.visualization</code></td>
+                <td>Renders 8-panel publication-grade scientific validation figure.</td>
+              </tr>
+              <tr>
+                <td><code>InteractiveScientificDashboard(...)</code></td>
+                <td><code>sprpcf.visualization</code></td>
+                <td>Launches interactive Matplotlib GUI with sliders and live readouts.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- SECTION: CLI REFERENCE -->
+      <section id="cli-reference">
+        <h2>⌨️ Command-Line Interface (CLI)</h2>
+        <p>The library includes a CLI tool for automated headless runs and CI/CD pipelines:</p>
+
+        <div class="code-container">
+          <div class="code-header"><span>BASH</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre><code># Initialize new YAML configuration template
+sprpcf init -o sensor_config.yaml
+
+# Validate geometry, hole clearances and materials
+sprpcf validate sensor_config.yaml
+
+# Render PCF cross-section
+sprpcf geometry sensor_config.yaml -o geometry.png
+
+# Discretize mesh and evaluate inradius/circumradius quality
+sprpcf mesh sensor_config.yaml -o mesh.png
+
+# Execute full simulation sweep and export results
+sprpcf run sensor_config.yaml -o output/</code></pre>
+        </div>
+      </section>
+
+      <!-- SECTION: CITATION & LICENSE -->
+      <section id="citation">
+        <h2>📖 Citation & License</h2>
+        <p>If you use SPR-PCF Studio in your research, papers, or thesis, please cite:</p>
+
+        <div class="code-container">
+          <div class="code-header"><span>BIBTEX</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre><code>@software{sprpcf_studio_2026,
+  author    = {SPR-PCF Studio Development Team},
+  title     = {{SPR-PCF Studio: A Universal Research-Grade Computational Framework for Surface Plasmon Resonance PCF Biosensors}},
+  year      = {2026},
+  version   = {0.1.0},
+  publisher = {GitHub},
+  url       = {https://github.com/Sifatkhan-1915020/sprpcf}
+}</code></pre>
+        </div>
+
+        <p>Distributed under the <b>MIT License</b>. Free for academic, scientific, and industrial use.</p>
+      </section>
+
+    </main>
+
+    <!-- RIGHT ON-PAGE TOC -->
+    <nav class="toc">
+      <div class="toc-title">On this page</div>
+      <ul>
+        <li><a href="#introduction">Introduction</a></li>
+        <li><a href="#installation">Installation</a></li>
+        <li><a href="#quickstart">Quick-Start Walkthrough</a></li>
+        <li><a href="#interactive-designer">Fiber Designer Widget</a></li>
+        <li><a href="#geometry-engine">1. Geometry Engine</a></li>
+        <li><a href="#materials-dispersion">2. Materials & Dispersion</a></li>
+        <li><a href="#meshing-validation">3. Meshing & Quality</a></li>
+        <li><a href="#full-vector-fem">4. Maxwell FEM Solver</a></li>
+        <li><a href="#mode-tracking">5. Mode Tracking</a></li>
+        <li><a href="#spr-analysis">6. SPR & Sensitivity</a></li>
+        <li><a href="#interactive-spr-lab">Interactive SPR Lab</a></li>
+        <li><a href="#visualizations">7. Visualizations</a></li>
+        <li><a href="#api-reference">API Reference</a></li>
+        <li><a href="#cli-reference">CLI Reference</a></li>
+        <li><a href="#citation">Citation</a></li>
+      </ul>
+    </nav>
+
+  </div>
+
+  <!-- JAVASCRIPT FOR INTERACTIVITY -->
+  <script>
+    // Theme Toggle
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const target = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', target);
+      localStorage.setItem('sprpcf-theme', target);
+      updateGeometrySim();
+      updateSprLab();
+    }
+    const savedTheme = localStorage.getItem('sprpcf-theme');
+    if (savedTheme) {
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    }
+
+    // Tab Switching
+    function switchTab(e, tabId) {
+      const parent = e.target.closest('.tab-container');
+      parent.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      parent.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      e.target.classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+    }
+
+    // Code Copy Button
+    function copyCode(btn) {
+      const pre = btn.closest('.code-container').querySelector('pre code');
+      navigator.clipboard.writeText(pre.innerText).then(() => {
+        const orig = btn.innerText;
+        btn.innerText = '✔ Copied!';
+        btn.style.background = '#10b981';
+        setTimeout(() => {
+          btn.innerText = orig;
+          btn.style.background = '';
+        }, 2000);
+      });
+    }
+
+    // Documentation Search Filter
+    function filterDocs() {
+      const query = document.getElementById('docSearch').value.toLowerCase();
+      document.querySelectorAll('.sidebar-link').forEach(link => {
+        const text = link.innerText.toLowerCase();
+        link.parentElement.style.display = text.includes(query) ? '' : 'none';
+      });
+    }
+
+    // 1. INTERACTIVE PCF GEOMETRY WIDGET
+    function updateGeometrySim() {
+      const R = parseFloat(document.getElementById('sliderR').value);
+      const dc = parseFloat(document.getElementById('sliderDc').value);
+      const pitch = parseFloat(document.getElementById('sliderPitch').value);
+      const au = parseFloat(document.getElementById('sliderAu').value);
+
+      document.getElementById('valR').innerText = R.toFixed(1) + ' \u03BCm';
+      document.getElementById('valDc').innerText = dc.toFixed(1) + ' \u03BCm';
+      document.getElementById('valPitch').innerText = pitch.toFixed(1) + ' \u03BCm';
+      document.getElementById('valAu').innerText = au.toFixed(0) + ' nm';
+
+      const chord = 2.0 * Math.sqrt(Math.max(0, R * R - dc * dc));
+      const holeDiam = pitch * 0.5;
+      const clearance = pitch - holeDiam;
+
+      document.getElementById('resChord').innerText = chord.toFixed(2) + ' \u03BCm';
+      document.getElementById('resClear').innerText = clearance.toFixed(2) + ' \u03BCm';
+
+      // Draw SVG Cross Section
+      const svg = document.getElementById('pcfSvg');
+      svg.innerHTML = '';
+
+      const scale = 14.0; // scale factor pixels per micron
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+
+      // Colors
+      const silicaColor = isDark ? '#1e293b' : '#e0f2fe';
+      const pmlColor = isDark ? 'rgba(59, 130, 246, 0.15)' : 'rgba(59, 130, 246, 0.08)';
+      const goldColor = '#f59e0b';
+      const holeColor = isDark ? '#090d16' : '#ffffff';
+      const strokeColor = isDark ? '#3b82f6' : '#0284c7';
+
+      // Draw PML Outer Ring
+      const pmlR = (R + 1.2) * scale;
+      const pmlCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      pmlCircle.setAttribute('cx', '0');
+      pmlCircle.setAttribute('cy', '0');
+      pmlCircle.setAttribute('r', pmlR);
+      pmlCircle.setAttribute('fill', pmlColor);
+      pmlCircle.setAttribute('stroke', '#64748b');
+      pmlCircle.setAttribute('stroke-dasharray', '3,3');
+      svg.appendChild(pmlCircle);
+
+      // Draw Cladding (D-cut)
+      const rPix = R * scale;
+      const dcPix = -dc * scale; // inverted Y axis in SVG
+      const halfW = (chord / 2.0) * scale;
+
+      // Arc path for D-shape
+      const dPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      const startAngle = Math.atan2(dcPix, -halfW);
+      const pathD = `M ${-halfW} ${dcPix} A ${rPix} ${rPix} 0 1 0 ${halfW} ${dcPix} Z`;
+      dPath.setAttribute('d', pathD);
+      dPath.setAttribute('fill', silicaColor);
+      dPath.setAttribute('stroke', strokeColor);
+      dPath.setAttribute('stroke-width', '1.5');
+      svg.appendChild(dPath);
+
+      // Draw Gold Layer on flat
+      const goldH = Math.max(3, au * 0.08);
+      const goldRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      goldRect.setAttribute('x', -halfW);
+      goldRect.setAttribute('y', dcPix - goldH);
+      goldRect.setAttribute('width', halfW * 2);
+      goldRect.setAttribute('height', goldH);
+      goldRect.setAttribute('fill', goldColor);
+      svg.appendChild(goldRect);
+
+      // Draw Hexagonal Air Holes (2 rings)
+      const hR = (holeDiam / 2.0) * scale;
+      for (let ring = 1; ring <= 2; ring++) {
+        for (let side = 0; side < 6; side++) {
+          for (let p = 0; p < ring; p++) {
+            const angle1 = (side * 60) * Math.PI / 180;
+            const angle2 = ((side + 1) * 60) * Math.PI / 180;
+            const x1 = ring * pitch * Math.cos(angle1);
+            const y1 = ring * pitch * Math.sin(angle1);
+            const x2 = ring * pitch * Math.cos(angle2);
+            const y2 = ring * pitch * Math.sin(angle2);
+            const frac = p / ring;
+            const hx = (x1 + frac * (x2 - x1)) * scale;
+            const hy = -(y1 + frac * (y2 - y1)) * scale;
+
+            // Only draw if below polished flat
+            if (hy > dcPix + hR) {
+              const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+              c.setAttribute('cx', hx);
+              c.setAttribute('cy', hy);
+              c.setAttribute('r', hR);
+              c.setAttribute('fill', holeColor);
+              c.setAttribute('stroke', strokeColor);
+              c.setAttribute('stroke-width', '1');
+              svg.appendChild(c);
+            }
+          }
+        }
+      }
+
+      // Draw Center Core Highlight
+      const core = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      core.setAttribute('cx', '0');
+      core.setAttribute('cy', '0');
+      core.setAttribute('r', (pitch * 0.4) * scale);
+      core.setAttribute('fill', 'rgba(239, 68, 68, 0.35)');
+      core.setAttribute('stroke', '#ef4444');
+      core.setAttribute('stroke-dasharray', '2,2');
+      svg.appendChild(core);
+    }
+
+    // 2. INTERACTIVE SPR SENSITIVITY LAB
+    function updateSprLab() {
+      const na1 = parseFloat(document.getElementById('sliderNa1').value);
+      const na2 = parseFloat(document.getElementById('sliderNa2').value);
+      const thick = parseFloat(document.getElementById('sliderGoldThick').value);
+
+      document.getElementById('valNa1').innerText = na1.toFixed(3);
+      document.getElementById('valNa2').innerText = na2.toFixed(3);
+      document.getElementById('valGoldThick').innerText = thick.toFixed(0) + ' nm';
+
+      const dna = Math.max(0.001, na2 - na1);
+      // Realistic empirical model of SPR shift: lambda_res ~ 1000 + (na - 1.33)*2300 nm
+      const baseL1 = 1092.0 + (na1 - 1.330) * 1230.0 + (thick - 40) * 0.8;
+      const baseL2 = 1092.0 + (na2 - 1.330) * 1230.0 + (thick - 40) * 0.8;
+      const dlambda = baseL2 - baseL1;
+      const sens = dlambda / dna;
+      const fwhm = 28.0 + (thick - 30) * 0.4;
+      const fom = sens / fwhm;
+      const resol = 0.1 / sens;
+
+      document.getElementById('resSens').innerText = sens.toFixed(1) + ' nm/RIU';
+      document.getElementById('resFom').innerText = fom.toFixed(2) + ' RIU\u207B\u00B9';
+      document.getElementById('resShift').innerText = (dlambda >= 0 ? '+' : '') + dlambda.toFixed(2) + ' nm';
+      document.getElementById('resResol').innerText = resol.toExponential(2) + ' RIU';
+
+      // Draw SVG Resonance Curves
+      const svg = document.getElementById('sprSvg');
+      svg.innerHTML = '';
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+
+      // Axes & grid
+      const w = 300, h = 240, pad = 35;
+      const axisColor = isDark ? '#475569' : '#cbd5e1';
+      const textColor = isDark ? '#94a3b8' : '#64748b';
+
+      const lineAxes = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      lineAxes.setAttribute('d', `M ${pad} 20 L ${pad} ${h - pad} L ${w - 20} ${h - pad}`);
+      lineAxes.setAttribute('stroke', axisColor);
+      lineAxes.setAttribute('stroke-width', '1.5');
+      lineAxes.setAttribute('fill', 'none');
+      svg.appendChild(lineAxes);
+
+      // Generate Lorentzian points
+      function makeLorentzianPath(lPeak, color) {
+        let path = '';
+        const lMin = 1050, lMax = 1150;
+        for (let px = pad; px <= w - 20; px += 2) {
+          const lam = lMin + ((px - pad) / (w - 20 - pad)) * (lMax - lMin);
+          const loss = 150.0 / (1.0 + Math.pow((lam - lPeak) / (fwhm / 2.0), 2)) + 15;
+          const py = (h - pad) - (loss / 180.0) * (h - pad - 30);
+          path += (px === pad ? 'M ' : 'L ') + `${px} ${py} `;
+        }
+        const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        p.setAttribute('d', path);
+        p.setAttribute('stroke', color);
+        p.setAttribute('stroke-width', '2.5');
+        p.setAttribute('fill', 'none');
+        svg.appendChild(p);
+
+        // Peak point
+        const peakX = pad + ((lPeak - lMin) / (lMax - lMin)) * (w - 20 - pad);
+        const peakY = (h - pad) - (165.0 / 180.0) * (h - pad - 30);
+        if (peakX >= pad && peakX <= w - 20) {
+          const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          c.setAttribute('cx', peakX);
+          c.setAttribute('cy', peakY);
+          c.setAttribute('r', '4');
+          c.setAttribute('fill', color);
+          svg.appendChild(c);
+        }
+      }
+
+      makeLorentzianPath(baseL1, '#3b82f6'); // Curve 1 (blue)
+      makeLorentzianPath(baseL2, '#ec4899'); // Curve 2 (pink)
+
+      // Legend
+      const leg1 = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      leg1.setAttribute('x', '45');
+      leg1.setAttribute('y', '35');
+      leg1.setAttribute('fill', '#3b82f6');
+      leg1.setAttribute('font-size', '10');
+      leg1.setAttribute('font-weight', 'bold');
+      leg1.textContent = `n_a1 = ${na1.toFixed(3)} (${baseL1.toFixed(1)} nm)`;
+      svg.appendChild(leg1);
+
+      const leg2 = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      leg2.setAttribute('x', '45');
+      leg2.setAttribute('y', '50');
+      leg2.setAttribute('fill', '#ec4899');
+      leg2.setAttribute('font-size', '10');
+      leg2.setAttribute('font-weight', 'bold');
+      leg2.textContent = `n_a2 = ${na2.toFixed(3)} (${baseL2.toFixed(1)} nm)`;
+      svg.appendChild(leg2);
+    }
+
+    // Initialize interactive widgets on load
+    window.addEventListener('DOMContentLoaded', () => {
+      updateGeometrySim();
+      updateSprLab();
+    });
+  </script>
+</body>
+</html>
