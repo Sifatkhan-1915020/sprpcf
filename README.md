@@ -5,6 +5,8 @@
 
 <p align="center">
   <a href="#-overview--core-philosophy"><b>Overview</b></a> •
+  <a href="#-installation--distribution"><b>Installation & PyPI</b></a> •
+  <a href="https://github.com/Sifatkhan-1915020/sprpcf/releases/tag/v0.1.0"><b>Release v0.1.0</b></a> •
   <a href="#-publication-grade-scientific-visualizations"><b>Visualizations</b></a> •
   <a href="#️-the-eight-pillars-of-scientific-validation"><b>8 Validation Pillars</b></a> •
   <a href="#-quick-start-guide"><b>Quick Start</b></a> •
@@ -14,11 +16,16 @@
 
 <!-- GitHub Badges -->
 <p align="center">
+  <a href="https://github.com/Sifatkhan-1915020/sprpcf/releases/tag/v0.1.0">
+    <img src="https://img.shields.io/badge/Release-v0.1.0-blue?style=for-the-badge&logo=github&logoColor=white" alt="GitHub Release v0.1.0" />
+  </a>
+  <a href="https://pypi.org/project/sprpcf/">
+    <img src="https://img.shields.io/badge/PyPI-sprpcf-3775A9?style=for-the-badge&logo=pypi&logoColor=white" alt="PyPI Package" />
+  </a>
   <img src="https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python Version" />
   <img src="https://img.shields.io/badge/Physics-Full--Vector%20Maxwell-4c1?style=for-the-badge&logo=physics&logoColor=white" alt="Full Vector Maxwell" />
   <img src="https://img.shields.io/badge/Tests-26%20Passed%20(100%25)-22c55e?style=for-the-badge&logo=pytest&logoColor=white" alt="Tests 26 Passed" />
   <img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" alt="MIT License" />
-  <img src="https://img.shields.io/badge/Reproducibility-Zero%20Synthetic%20Data-f59e0b?style=for-the-badge" alt="Reproducibility" />
 </p>
 
 <p align="center">
@@ -200,10 +207,26 @@ Rich visualization and post-processing tools:
 
 ---
 
-## 🚀 Quick Start Guide
+## 📦 Installation & Distribution
 
-### 1. Installation
+You can install **SPR-PCF Studio** via PyPI, direct GitHub Release wheel, or from source:
 
+### Option A: Install via PyPI (Recommended)
+```bash
+# Standard installation
+pip install sprpcf
+
+# With optional FEM backends (Gmsh, NGSolve/Netgen)
+pip install "sprpcf[all]"
+```
+
+### Option B: Install Direct Pre-Built Wheel from GitHub Release
+```bash
+# Install v0.1.0 binary wheel directly from GitHub
+pip install https://github.com/Sifatkhan-1915020/sprpcf/releases/download/v0.1.0/sprpcf-0.1.0-py3-none-any.whl
+```
+
+### Option C: Install from Source (For Developers)
 ```bash
 # Clone the repository
 git clone https://github.com/Sifatkhan-1915020/sprpcf.git
@@ -214,14 +237,40 @@ python -m venv .venv
 source .venv/bin/activate       # On Linux/macOS
 .venv\Scripts\activate          # On Windows
 
-# Install library in editable mode
-pip install -e .
+# Install in editable mode with development & testing extras
+pip install -e .[test]
 
-# Optional: Run full test suite (26 tests)
+# Verify test suite (26 tests passing)
 pytest -v tests/
 ```
 
-### 2. End-to-End Flagship Simulation Script
+<details>
+<summary><b>🛠️ PyPI Publishing & Maintenance Instructions (For Maintainers)</b></summary>
+<br>
+
+To release updates to the official **[PyPI Repository](https://pypi.org/project/sprpcf/)**:
+
+1. **Build Distribution Packages**:
+   ```bash
+   python -m build
+   ```
+2. **Verify Distribution Packages**:
+   ```bash
+   twine check dist/*
+   ```
+3. **Upload to PyPI**:
+   ```bash
+   twine upload dist/*
+   ```
+   - **Username**: `__token__`
+   - **Password**: `<your-pypi-api-token-starting-with-pypi->`
+</details>
+
+---
+
+## 🚀 Quick Start Guide
+
+### 1. End-to-End Flagship Simulation Script
 
 Run the complete 8-pillar simulation pipeline with a single command:
 
@@ -233,7 +282,7 @@ python run_complete_spr_simulation.py --no-show
 python run_complete_spr_simulation.py
 ```
 
-### 3. Python API Minimal Example
+### 2. Python API Minimal Example
 
 ```python
 import sprpcf as spr
